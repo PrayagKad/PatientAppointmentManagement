@@ -1,0 +1,131 @@
+﻿@model AppointmentBooking.ViewModels.RegisterViewModel
+
+@{
+    ViewBag.Title = "Patient Registration";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+
+        <div class="card mt-5 shadow-sm">
+
+            <div class="card-body">
+
+                <h3 class="text-center mb-4">
+                    Patient Registration
+                </h3>
+                <h2 class="text-danger">  @TempData["message"] </h2>
+
+                @using (Html.BeginForm("RegisterPatient", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group mb-3">
+
+                        @Html.LabelFor(m => m.FullName)
+
+                        @Html.TextBoxFor(m => m.FullName,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter full name"
+                            })
+
+                        @Html.ValidationMessageFor(m => m.FullName,
+                            "",
+                            new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @Html.LabelFor(m => m.Email)
+
+                        @Html.TextBoxFor(m => m.Email,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter email"
+                            })
+
+                        @Html.ValidationMessageFor(m => m.Email,
+                            "",
+                            new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @Html.LabelFor(m => m.Phone)
+
+                        @Html.TextBoxFor(m => m.Phone,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter phone number"
+                            })
+
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @Html.LabelFor(m => m.Password)
+
+                        @Html.PasswordFor(m => m.Password,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Enter password"
+                            })
+
+                        @Html.ValidationMessageFor(m => m.Password,
+                            "",
+                            new { @class = "text-danger" })
+
+                    </div>
+
+                    <div class="form-group mb-3">
+
+                        @Html.LabelFor(m => m.ConfirmPassword)
+
+                        @Html.PasswordFor(m => m.ConfirmPassword,
+                            new
+                            {
+                                @class = "form-control",
+                                placeholder = "Confirm password"
+                            })
+
+                        @Html.ValidationMessageFor(
+                            m => m.ConfirmPassword,
+                            "",
+                            new { @class = "text-danger" })
+
+                    </div>
+
+                    <button type="submit"
+                            class="btn btn-primary w-100">
+                        Register
+                    </button>
+
+                    <div class="text-center mt-3">
+
+                        @Html.ActionLink(
+                            "Already have an account? Login",
+                            "Login",
+                            "Account"
+                        )
+
+                    </div>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

@@ -7,11 +7,11 @@ namespace AppointmentBooking.Models
 {
     public class DoctorSlots
     {
-        public  int slotId { get; set; }
-        public int scheduledId { get; set; }
-        public DateTime startTime { get; set; }
-        public DateTime endTime { get; set; }
-        public string status { get; set; }
-        public DateTime createdDate { get; set; }
+        public  int SlotId { get; set; }
+        public int ScheduledId { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+        public string Status { get; set; }
+        public DateTime CreatedDate { get; set; }
     }
 }
