@@ -21,35 +21,32 @@ namespace AppointmentBooking.Controllers
         public ActionResult Login(LoginViewModel lm)
         {
 
-            var user = LoginBLL.loginCheck(lm.Email);
+            User user = LoginBLL.loginCheck(lm.Email);
 
-            if(user.Role == null)
+            if(user == null || user.Password != lm.Password)
             {
-                TempData["message"] = " account not found , enter credentials correctly ";
+                TempData["message"] = " enter Valid credentials correctly ";
                 return View(lm);
             }
 
-
             // states the user is authenticated or not for other requests
-
                  FormsAuthentication.SetAuthCookie(
                  user.UserId.ToString(),
-                 lm.RememberMe
-    );
+                 lm.RememberMe);
 
             if (user.Role == "Admin")
             {
-                return RedirectToAction("Index", "Admin");
+                return RedirectToAction("DashBoard", "Admin");
             }
 
             if (user.Role == "Doctor")
             {
-                return RedirectToAction("Index", "Doctor");
+                return RedirectToAction("DashBoard", "Doctor");
             }
 
             if (user.Role == "Patient")
             {
-                return RedirectToAction("Index", "Patient");
+                return RedirectToAction("Home", "Patient");
             }
 
             FormsAuthentication.SignOut();

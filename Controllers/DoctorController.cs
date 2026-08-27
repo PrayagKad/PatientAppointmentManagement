@@ -6,6 +6,8 @@ using System.Web.Mvc;
 
 namespace AppointmentBooking.Controllers
 {
+    [Authorize(Roles ="Doctor")]
+    [Authorize(Roles ="Admin")]
     public class DoctorController : Controller
     {
         // GET: Doctor

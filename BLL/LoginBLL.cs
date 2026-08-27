@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using AppointmentBooking.Models;
 using AppointmentBooking.DAL;
+using System.Data;
 
 namespace AppointmentBooking.BLL
 {
@@ -17,7 +18,24 @@ namespace AppointmentBooking.BLL
 
             Dictionary<string, object> ds = new Dictionary<string, object>();
             ds.Add("@Email", Email);
-            var us = ExecuteSp.ExecuteSelectBy(conn,sp_name,ds);
+            DataTable dt = ExecuteSp.ExecuteSelectBy(conn,sp_name,ds);
+
+            if (dt == null || dt.Rows.Count == 0)
+                return null;
+
+            DataRow row = dt.Rows[0];
+
+            User user = new User
+            {
+                UserId = Convert.ToInt32(row["UserId"]),
+                FullName = row["FullName"].ToString(),
+                Email = row["Email"].ToString(),
+                Password = row["PasswordHash"].ToString(),
+                Role = row["Role"].ToString(),
+                isActive = Convert.ToBoolean(row["IsActive"])
+            };
+
+            return user;
 
         }
 
