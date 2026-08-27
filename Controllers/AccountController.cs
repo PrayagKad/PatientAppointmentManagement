@@ -29,10 +29,17 @@ namespace AppointmentBooking.Controllers
                 return View(lm);
             }
 
-            // states the user is authenticated or not for other requests
-                 FormsAuthentication.SetAuthCookie(
-                 user.UserId.ToString(),
-                 lm.RememberMe);
+            // Session Creation
+
+            Session["UserId"] = user.UserId;
+            Session["FullName"] = user.FullName;
+            Session["Email"] = user.Email;
+            Session["Role"] = user.Role;
+
+            //// states the user is logged in or not for other requests
+            //FormsAuthentication.SetAuthCookie(
+            //     user.UserId.ToString(),
+            //     lm.RememberMe);
 
             if (user.Role == "Admin")
             {

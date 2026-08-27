@@ -1,0 +1,140 @@
+﻿
+
+@{
+    ViewBag.Title = "Doctor Dashboard";
+}
+
+<div class="container">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2>Doctor Dashboard</h2>
+
+            <p class="text-muted">
+                Welcome, Dr. @Session["FullName"]
+            </p>
+        </div>
+
+        <div>
+            @Html.ActionLink(
+                "Manage Schedule",
+                "SetSchedule",
+                "Doctor",
+                null,
+                new { @class = "btn btn-primary me-2" }
+            )
+
+            @Html.ActionLink(
+                "Manage Profile",
+                "Profile",
+                "Doctor",
+                null,
+                new { @class = "btn btn-secondary" }
+            )
+        </div>
+
+    </div>
+
+    <div class="card">
+
+        <div class="card-header">
+            <h4 class="mb-0">Today's Appointments</h4>
+        </div>
+
+        <div class="card-body">
+
+            <table class="table table-bordered">
+
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Patient</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody id="appointmentBody">
+                    <tr>
+                        <td colspan="3" class="text-center">
+                            Loading...
+                        </td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+
+            loadTodayAppointments();
+
+        });
+
+        function loadTodayAppointments() {
+
+            $.ajax({
+
+                url: '@Url.Action("GetTodayAppointments", "Doctor")',
+
+                type: 'GET',
+
+                success: function (response) {
+
+                    var tbody = $("#appointmentBody");
+
+                    tbody.empty();
+
+                    if (response.length === 0) {
+
+                        tbody.append(
+                            '<tr>' +
+                            '<td colspan="3" class="text-center">' +
+                            'No appointments for today' +
+                            '</td>' +
+                            '</tr>'
+                        );
+
+                        return;
+                    }
+
+                    $.each(response, function (index, appointment) {
+
+                        tbody.append(
+                            '<tr>' +
+                            '<td>' + appointment.Time + '</td>' +
+                            '<td>' + appointment.PatientName + '</td>' +
+                            '<td>' + appointment.Status + '</td>' +
+                            '</tr>'
+                        );
+
+                    });
+
+                },
+
+                error: function () {
+
+                    $("#appointmentBody").html(
+                        '<tr>' +
+                        '<td colspan="3" class="text-center text-danger">' +
+                        'Unable to load appointments' +
+                        '</td>' +
+                        '</tr>'
+                    );
+
+                }
+
+            });
+        }
+
+    </script>
+}
