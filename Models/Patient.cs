@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 
 namespace AppointmentBooking.Models
 {
@@ -10,9 +11,14 @@ namespace AppointmentBooking.Models
         public int patientId { get; set; }
         public int userId { get; set; }
 
-        public DateTime? MyProperty { get; set; }
+        public DateTime? dateOFbirth { get; set; }
 
+        [StringLength(6)]
+        public string gender { get; set; }
+        public string address { get; set; }
 
+        [Phone]
+        public string phone { get; set; }
 
 
     }

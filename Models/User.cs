@@ -8,17 +8,17 @@ namespace AppointmentBooking.Models
 {
     public class User
     {
-        public int userId { get; set; }
-        public string fullName { get; set; }
+        public int UserId { get; set; }
+        public string FullName { get; set; }
 
         [EmailAddress]
-        public string email { get; set; }
+        public string Email { get; set; }
 
-        public string password { get; set; }
+        public string Password { get; set; }
 
         [Phone]
-        public long phone { get; set; }
-        public Enum role { get; set; }
+        public string Phone { get; set; }
+        public string Role { get; set; }
         public  bool isActive { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime ModifiedDate { get; set; }

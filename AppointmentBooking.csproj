@@ -133,6 +133,7 @@
     </Compile>
     <Compile Include="Models\Appointment.cs" />
     <Compile Include="Models\Doctor.cs" />
+    <Compile Include="Models\DoctorBreak.cs" />
     <Compile Include="Models\DoctorSchedule.cs" />
     <Compile Include="Models\DoctorSlots.cs" />
     <Compile Include="Models\Patient.cs" />
@@ -184,6 +185,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Doctor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
