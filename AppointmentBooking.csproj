@@ -120,10 +120,12 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="BLL\AdminBLL.cs" />
     <Compile Include="BLL\DoctorBLL.cs" />
     <Compile Include="BLL\LoginBLL.cs" />
     <Compile Include="BLL\PatientBLL.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="CustomHelpers\RoleAuthorizeAtrribute.cs" />
@@ -140,6 +142,7 @@
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AppointmetViewModel.cs" />
+    <Compile Include="ViewModels\AddDoctorViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
@@ -182,10 +185,11 @@
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\RegisterPatient.cshtml" />
     <Content Include="Views\Doctor\DashBoard.cshtml" />
+    <Content Include="Views\Admin\ADashBoard.cshtml" />
+    <Content Include="Views\Admin\AddDoctor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Views\Doctor\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

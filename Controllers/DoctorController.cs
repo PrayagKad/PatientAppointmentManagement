@@ -8,7 +8,7 @@ using AppointmentBooking.BLL;
 
 namespace AppointmentBooking.Controllers
 {
-   //[RoleAuthorize("Doctor","Admin")]
+   [RoleAuthorize("Doctor","Admin")]
     public class DoctorController : Controller
     {
         // doctor DashBoard
