@@ -111,18 +111,146 @@
                     <!-- Schedule Date -->
                     <div class="mb-3">
 
-                        <label for="scheduleDate"
-                               class="form-label">
-                            Schedule Date
+                        <label class="form-label">
+                            Schedule From
                         </label>
 
                         <input type="date"
-                               id="scheduleDate"
+                               id="scheduleFrom"
                                class="form-control"
                                required />
 
                         <div class="text-danger"
-                             id="scheduleDateError">
+                             id="scheduleFromError">
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Schedule To
+                        </label>
+
+                        <input type="date"
+                               id="scheduleTo"
+                               class="form-control"
+                               required />
+
+                        <div class="text-danger"
+                             id="scheduleToError">
+                        </div>
+
+                    </div>
+
+
+                    <!-- select days of week to create schedule -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Apply Schedule On
+                        </label>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Monday"
+                                           id="monday">
+
+                                    <label class="form-check-label"
+                                           for="monday">
+                                        Monday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Tuesday"
+                                           id="tuesday">
+
+                                    <label class="form-check-label"
+                                           for="tuesday">
+                                        Tuesday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Wednesday"
+                                           id="wednesday">
+
+                                    <label class="form-check-label"
+                                           for="wednesday">
+                                        Wednesday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Thursday"
+                                           id="thursday">
+
+                                    <label class="form-check-label"
+                                           for="thursday">
+                                        Thursday
+                                    </label>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Friday"
+                                           id="friday">
+
+                                    <label class="form-check-label"
+                                           for="friday">
+                                        Friday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Saturday"
+                                           id="saturday">
+
+                                    <label class="form-check-label"
+                                           for="saturday">
+                                        Saturday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Sunday"
+                                           id="sunday">
+
+                                    <label class="form-check-label"
+                                           for="sunday">
+                                        Sunday
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="text-danger"
+                             id="dayError">
                         </div>
 
                     </div>
@@ -219,21 +347,23 @@
 
                             <div class="row mb-2 break-row">
 
-                                <div class="col-md-5">
+                                <div class="col-md-4">
                                     <input type="time"
                                            class="form-control break-start"
                                            placeholder="Start Time">
                                 </div>
 
-                                <div class="col-md-5">
+                                <div class="col-md-3">
                                     <input type="time"
                                            class="form-control break-end"
                                            placeholder="End Time">
                                 </div>
 
-                                <input type="text"
-                                       class="form-control break-reason"
-                                       placeholder="Reason">
+                                <div class="col-md-3">
+                                    <input type="text"
+                                           class="form-control break-reason"
+                                           placeholder="Reason">
+                                </div>
 
                                 <div class="col-md-2">
                                     <button type="button"
@@ -330,6 +460,28 @@
 
             });
 
+            $("#btnAddBreak").click(function () {
+
+                var row = $(".break-row:first").clone();
+
+                row.find("input").val("");
+
+                $("#breakContainer").append(row);
+
+            });
+
+        });
+        // remove break
+        $(document).on("click", ".btnRemoveBreak", function () {
+
+            if ($(".break-row").length > 1) {
+
+                $(this)
+                    .closest(".break-row")
+                    .remove();
+
+            }
+
         });
 
 
@@ -341,21 +493,53 @@
 
             clearScheduleErrors();
 
-            var date = $("#scheduleDate").val();
+            var from = $("#scheduleFrom").val();
+            var to = $("#scheduleTo").val();
+
             var start = $("#startTime").val();
             var end = $("#endTime").val();
+
             var duration = $("#slotDuration").val();
 
             var valid = true;
 
 
-            if (date === "") {
+            if (from === "") {
 
-                $("#scheduleDateError")
-                    .text("Please select a date.");
+                $("#scheduleFromError")
+                    .text("Please select start date.");
 
                 valid = false;
+            }
 
+
+            if (to === "") {
+
+                $("#scheduleToError")
+                    .text("Please select end date.");
+
+                valid = false;
+            }
+
+
+            if (from !== "" && to !== "") {
+
+                if (from > to) {
+
+                    $("#scheduleToError")
+                        .text("End date must be after start date.");
+
+                    valid = false;
+                }
+            }
+
+
+            if ($(".day-check:checked").length === 0) {
+
+                $("#dayError")
+                    .text("Please select at least one day.");
+
+                valid = false;
             }
 
 
@@ -365,7 +549,6 @@
                     .text("Please select start time.");
 
                 valid = false;
-
             }
 
 
@@ -375,7 +558,6 @@
                     .text("Please select end time.");
 
                 valid = false;
-
             }
 
 
@@ -385,11 +567,9 @@
                     .text("Please select slot duration.");
 
                 valid = false;
-
             }
 
 
-            // Check start < end
             if (start !== "" && end !== "") {
 
                 if (start >= end) {
@@ -398,91 +578,114 @@
                         .text("End time must be after start time.");
 
                     valid = false;
-
                 }
-
             }
 
 
             return valid;
-
         }
 
 
         // =========================================
         // Create Schedule
         // =========================================
+        function createSchedule() {
 
-       function createSchedule() {
+            var breaks = [];
 
-                var breaks = [];
+            $(".break-row").each(function () {
 
-                $(".break-row").each(function () {
+                var start = $(this).find(".break-start").val();
+                var end = $(this).find(".break-end").val();
+                var reason = $(this).find(".break-reason").val();
+
+                if (start !== "" && end !== "") {
 
                     breaks.push({
-                        StartTime: $(this).find(".break-start").val(),
-                        EndTime: $(this).find(".break-end").val(),
-                        Reason: $(this).find(".break-reason").val()
+                        StartTime: start,
+                        EndTime: end,
+                        Reason: reason
                     });
 
-                });
+                }
+
+            });
 
 
-                var scheduleData = {
+            var days = [];
 
-                    ScheduleDate: $("#scheduleDate").val(),
+            $(".day-check:checked").each(function () {
 
-                    StartTime: $("#startTime").val(),
+                days.push($(this).val());
 
-                    EndTime: $("#endTime").val(),
-
-                    SlotDurationMinutes:
-                        $("#slotDuration").val(),
-
-                    Breaks: breaks
-
-                };
+            });
 
 
-                $.ajax({
+            var scheduleData = {
 
-                    url: '@Url.Action("SetSchedule", "Doctor")',
+                ScheduleFrom:
+                    $("#scheduleFrom").val(),
 
-                    type: 'POST',
+                ScheduleTo:
+                    $("#scheduleTo").val(),
 
-                    data: scheduleData,
+                Days: days,
 
-                    success: function (response) {
+                StartTime:
+                    $("#startTime").val(),
 
-                        if (response.success) {
+                EndTime:
+                    $("#endTime").val(),
 
-                            $("#scheduleModal").modal("hide");
+                SlotDurationMinutes:
+                    $("#slotDuration").val(),
 
-                            $("#scheduleForm")[0].reset();
+                Breaks: breaks
 
-                            $("#breakContainer").empty();
+            };
 
-                            alert(response.message);
 
-                        }
-                        else {
+            $.ajax({
 
-                            $("#scheduleError")
-                                .text(response.message);
+                url: '@Url.Action("SetSchedule", "Doctor")',
 
-                        }
+                type: 'POST',
 
-                    },
+                data: scheduleData,
 
-                    error: function () {
+                success: function (response) {
+
+                    if (response.success) {
+
+                        $("#scheduleModal").modal("hide");
+
+                        $("#scheduleForm")[0].reset();
+
+                        $("#breakContainer").empty();
+
+                        alert(response.message);
+
+                    }
+                    else {
 
                         $("#scheduleError")
-                            .text("Unable to create schedule.");
+                            .text(response.message);
 
                     }
 
-    });
-}
+                },
+
+                error: function () {
+
+                    $("#scheduleError")
+                        .text("Unable to create schedule.");
+
+                }
+
+            });
+        }
+
+
 
         // =========================================
         // Clear Schedule Errors
@@ -490,7 +693,11 @@
 
         function clearScheduleErrors() {
 
-            $("#scheduleDateError").text("");
+            $("#scheduleFromError").text("");
+
+            $("#scheduleToError").text("");
+
+            $("#dayError").text("");
 
             $("#startTimeError").text("");
 
@@ -501,7 +708,6 @@
             $("#scheduleError").text("");
 
         }
-
 
         // =========================================
         // Today's Appointments

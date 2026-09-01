@@ -7,7 +7,12 @@ namespace AppointmentBooking.ViewModels
 {
     public class SetScheduleViewModel
     {
-        public DateTime ScheduleDate { get; set; }
+
+        public DateTime ScheduleFrom { get; set; }
+
+        public DateTime ScheduleTo { get; set; }
+
+        public List<string> Days { get; set; }
 
         public TimeSpan StartTime { get; set; }
 
@@ -16,5 +21,6 @@ namespace AppointmentBooking.ViewModels
         public int SlotDurationMinutes { get; set; }
 
         public List<BreakViewModel> Breaks { get; set; }
+
     }
 }

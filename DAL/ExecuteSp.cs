@@ -119,7 +119,7 @@ namespace AppointmentBooking.DAL
 
 
         // for sps that return errorcodes
-        public static int ExecuteNonQueryErrorCode(string connection, string spname, Dictionary<string, object> param = null, DataTable breakTable = null)
+        public static int ExecuteNonQueryErrorCode(string connection, string spname, Dictionary<string, object> param = null, DataTable dateTable =null , DataTable breakTable = null)
         {
             try
             {
@@ -137,6 +137,21 @@ namespace AppointmentBooking.DAL
                             }
 
                         }
+
+                        if (dateTable != null)
+                        {
+                            SqlParameter dateParameter =
+                                cmd.Parameters.AddWithValue(
+                                    "@ScheduleDates",
+                                    dateTable);
+
+                            dateParameter.SqlDbType =
+                                SqlDbType.Structured;
+
+                            dateParameter.TypeName =
+                                "dbo.ScheduleDateType";
+                        }
+
                         // for doctor breaks only , 
                         if (breakTable != null)
                         {
