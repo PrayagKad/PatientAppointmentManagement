@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewBag.Title = "Doctor Dashboard";
 }
 
@@ -17,13 +15,13 @@
         </div>
 
         <div>
-            @Html.ActionLink(
-                "Manage Schedule",
-                "SetSchedule",
-                "Doctor",
-                null,
-                new { @class = "btn btn-primary me-2" }
-            )
+
+            <!-- Manage Schedule -->
+            <button type="button"
+                    class="btn btn-primary me-2"
+                    id="btnManageSchedule">
+                Manage Schedule
+            </button>
 
             @Html.ActionLink(
                 "Manage Profile",
@@ -32,9 +30,11 @@
                 null,
                 new { @class = "btn btn-secondary" }
             )
+
         </div>
 
     </div>
+
 
     <div class="card">
 
@@ -55,11 +55,13 @@
                 </thead>
 
                 <tbody id="appointmentBody">
+
                     <tr>
                         <td colspan="3" class="text-center">
                             Loading...
                         </td>
                     </tr>
+
                 </tbody>
 
             </table>
@@ -70,15 +72,440 @@
 
 </div>
 
+
+<!-- ================================= -->
+<!-- Manage Schedule Modal -->
+<!-- ================================= -->
+
+<div class="modal fade"
+     id="scheduleModal"
+     tabindex="-1"
+     aria-labelledby="scheduleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="scheduleModalLabel">
+                    Create Schedule
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <form id="scheduleForm">
+
+                    <!-- Schedule Date -->
+                    <div class="mb-3">
+
+                        <label for="scheduleDate"
+                               class="form-label">
+                            Schedule Date
+                        </label>
+
+                        <input type="date"
+                               id="scheduleDate"
+                               class="form-control"
+                               required />
+
+                        <div class="text-danger"
+                             id="scheduleDateError">
+                        </div>
+
+                    </div>
+
+
+                    <!-- Start / End -->
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="startTime"
+                                   class="form-label">
+                                Start Time
+                            </label>
+
+                            <input type="time"
+                                   id="startTime"
+                                   class="form-control"
+                                   required />
+
+                            <div class="text-danger"
+                                 id="startTimeError">
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="endTime"
+                                   class="form-label">
+                                End Time
+                            </label>
+
+                            <input type="time"
+                                   id="endTime"
+                                   class="form-control"
+                                   required />
+
+                            <div class="text-danger"
+                                 id="endTimeError">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Slot Duration -->
+                    <div class="mb-3">
+
+                        <label for="slotDuration"
+                               class="form-label">
+                            Slot Duration
+                        </label>
+
+                        <select id="slotDuration"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                Select slot duration
+                            </option>
+
+                            <option value="15">
+                                15 Minutes
+                            </option>
+
+                            <option value="30">
+                                30 Minutes
+                            </option>
+
+                            <option value="45">
+                                45 Minutes
+                            </option>
+
+                            <option value="60">
+                                60 Minutes
+                            </option>
+
+                        </select>
+
+                        <div class="text-danger"
+                             id="slotDurationError">
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">Breaks</label>
+
+                        <div id="breakContainer">
+
+                            <div class="row mb-2 break-row">
+
+                                <div class="col-md-5">
+                                    <input type="time"
+                                           class="form-control break-start"
+                                           placeholder="Start Time">
+                                </div>
+
+                                <div class="col-md-5">
+                                    <input type="time"
+                                           class="form-control break-end"
+                                           placeholder="End Time">
+                                </div>
+
+                                <input type="text"
+                                       class="form-control break-reason"
+                                       placeholder="Reason">
+
+                                <div class="col-md-2">
+                                    <button type="button"
+                                            class="btn btn-danger btnRemoveBreak">
+                                        Remove
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                id="btnAddBreak">
+                            + Add Break
+                        </button>
+
+                    </div>
+
+
+                    <!-- General Error -->
+                    <div id="scheduleError"
+                         class="text-danger mb-2">
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Footer -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        id="Cancelbtn">
+
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        id="btnCreateSchedule">
+                    Create Schedule
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
 @section Scripts
 {
     <script>
 
         $(document).ready(function () {
 
+            // Load today's appointments
             loadTodayAppointments();
 
+
+
+            // Open schedule modal
+            $("#btnManageSchedule").click(function () {
+
+                clearScheduleErrors();
+
+                $("#scheduleModal").modal("show");
+
+            });
+
+
+            // Create schedule
+            $("#btnCreateSchedule").click(function () {
+
+                if (!validateSchedule())
+                    return;
+
+                createSchedule();
+
+            });
+
+            $("#Cancelbtn").click(function () {
+
+                $("#scheduleModal").modal("hide");
+
+            });
+
         });
+
+
+        // =========================================
+        // Validate Schedule
+        // =========================================
+
+        function validateSchedule() {
+
+            clearScheduleErrors();
+
+            var date = $("#scheduleDate").val();
+            var start = $("#startTime").val();
+            var end = $("#endTime").val();
+            var duration = $("#slotDuration").val();
+
+            var valid = true;
+
+
+            if (date === "") {
+
+                $("#scheduleDateError")
+                    .text("Please select a date.");
+
+                valid = false;
+
+            }
+
+
+            if (start === "") {
+
+                $("#startTimeError")
+                    .text("Please select start time.");
+
+                valid = false;
+
+            }
+
+
+            if (end === "") {
+
+                $("#endTimeError")
+                    .text("Please select end time.");
+
+                valid = false;
+
+            }
+
+
+            if (duration === "") {
+
+                $("#slotDurationError")
+                    .text("Please select slot duration.");
+
+                valid = false;
+
+            }
+
+
+            // Check start < end
+            if (start !== "" && end !== "") {
+
+                if (start >= end) {
+
+                    $("#endTimeError")
+                        .text("End time must be after start time.");
+
+                    valid = false;
+
+                }
+
+            }
+
+
+            return valid;
+
+        }
+
+
+        // =========================================
+        // Create Schedule
+        // =========================================
+
+       function createSchedule() {
+
+                var breaks = [];
+
+                $(".break-row").each(function () {
+
+                    breaks.push({
+                        StartTime: $(this).find(".break-start").val(),
+                        EndTime: $(this).find(".break-end").val(),
+                        Reason: $(this).find(".break-reason").val()
+                    });
+
+                });
+
+
+                var scheduleData = {
+
+                    ScheduleDate: $("#scheduleDate").val(),
+
+                    StartTime: $("#startTime").val(),
+
+                    EndTime: $("#endTime").val(),
+
+                    SlotDurationMinutes:
+                        $("#slotDuration").val(),
+
+                    Breaks: breaks
+
+                };
+
+
+                $.ajax({
+
+                    url: '@Url.Action("SetSchedule", "Doctor")',
+
+                    type: 'POST',
+
+                    data: scheduleData,
+
+                    success: function (response) {
+
+                        if (response.success) {
+
+                            $("#scheduleModal").modal("hide");
+
+                            $("#scheduleForm")[0].reset();
+
+                            $("#breakContainer").empty();
+
+                            alert(response.message);
+
+                        }
+                        else {
+
+                            $("#scheduleError")
+                                .text(response.message);
+
+                        }
+
+                    },
+
+                    error: function () {
+
+                        $("#scheduleError")
+                            .text("Unable to create schedule.");
+
+                    }
+
+    });
+}
+
+        // =========================================
+        // Clear Schedule Errors
+        // =========================================
+
+        function clearScheduleErrors() {
+
+            $("#scheduleDateError").text("");
+
+            $("#startTimeError").text("");
+
+            $("#endTimeError").text("");
+
+            $("#slotDurationError").text("");
+
+            $("#scheduleError").text("");
+
+        }
+
+
+        // =========================================
+        // Today's Appointments
+        // =========================================
 
         function loadTodayAppointments() {
 

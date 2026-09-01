@@ -128,6 +128,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\DoctorController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PatientController.cs" />
     <Compile Include="CustomHelpers\RoleAuthorizeAtrribute.cs" />
     <Compile Include="DAL\ExecuteSp.cs" />
     <Compile Include="Global.asax.cs">
@@ -143,8 +144,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\AppointmetViewModel.cs" />
     <Compile Include="ViewModels\AddDoctorViewModel.cs" />
+    <Compile Include="ViewModels\BreakViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\SetScheduleViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap-theme.css" />
@@ -187,6 +190,7 @@
     <Content Include="Views\Doctor\DashBoard.cshtml" />
     <Content Include="Views\Admin\ADashBoard.cshtml" />
     <Content Include="Views\Admin\AddDoctor.cshtml" />
+    <Content Include="Views\Patient\DashBoard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

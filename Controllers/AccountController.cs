@@ -43,7 +43,7 @@ namespace AppointmentBooking.Controllers
 
             if (user.Role == "Admin")
             {
-                return RedirectToAction("DashBoard", "Admin");
+                return RedirectToAction("ADashBoard", "Admin");
             }
 
             if (user.Role == "Doctor")
