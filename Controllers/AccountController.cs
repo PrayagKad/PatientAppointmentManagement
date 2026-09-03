@@ -14,6 +14,12 @@ namespace AppointmentBooking.Controllers
         // GET: Account
         public ActionResult Login()
         {
+
+            // remove cached pages 
+            Response.Cache.SetCacheability( System.Web.HttpCacheability.NoCache);
+
+            Response.Cache.SetNoStore();
+
             return View();
         }
 
@@ -53,10 +59,10 @@ namespace AppointmentBooking.Controllers
 
             if (user.Role == "Patient")
             {
-                return RedirectToAction("Home", "Patient");
+                return RedirectToAction("Dashboard", "Patient");
             }
 
-            FormsAuthentication.SignOut();
+           //  FormsAuthentication.SignOut();
 
             ModelState.AddModelError(
                 "",
@@ -95,6 +101,20 @@ namespace AppointmentBooking.Controllers
             }
             return View(rm);
            
+        }
+
+
+        
+        // check if patient has logged in 
+        [HttpGet]
+        public JsonResult IsLoggedIn()
+        {
+            bool isLoggedIn = Session["UserId"] != null;
+
+            return Json(
+                new { isLoggedIn = isLoggedIn },
+                JsonRequestBehavior.AllowGet
+            );
         }
     }
 }
