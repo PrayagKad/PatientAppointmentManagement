@@ -492,7 +492,7 @@
 
                 });
 
-               
+
 
             },
 
@@ -622,7 +622,9 @@
         $("#summaryDate").text(selectedDate);
         $("#summaryTime").text(selectedSlotText);
 
-        $("#bookingSummaryModal").modal("show");
+
+        // open patient details modal
+            $("#patientDetailsModal").modal("show");
 
     // Check login
     $.ajax({
@@ -643,14 +645,16 @@
             sessionStorage.setItem( "bookingSlotId",  selectedSlotId );
 
             // Go to login
-            window.location.href =  '@Url.Action("Login", "Account")' +
-                '?returnUrl=' +
-                encodeURIComponent( '@Url.Action("Dashboard", "Patient")');
+                window.location.href = '@Url.Action("Login", "Account")';
 
                 return;
             }
 
-            alert("user logged in");
+            // Only logged-in patient reaches here
+            $("#patientDetailsModal").modal("show");
+
+            // load patient details
+            loadPatientDetails();
 
         },
 
@@ -664,6 +668,116 @@
 
 });
 
+    function loadPatientDetails() {
+
+    $.ajax({
+        url: '@Url.Action("GetPatientDetails", "Patient")',
+        type: 'GET',
+
+        success: function (response) {
+
+            var patient = JSON.parse(response);
+
+            if (patient.length === 0) {
+                alert("Patient details not found.");
+                return;
+            }
+
+            var data = patient[0];
+
+            $("#patientFullName").val(data.FullName);
+            $("#patientEmail").val(data.Email);
+            $("#patientPhone").val(data.Phone);
+            $("#patientDateOfBirth").val(data.DateOfBirth);
+            $("#patientGender").val(data.Gender);
+            $("#patientAddress").val(data.Address);
+        },
+
+        error: function () {
+            alert("Unable to load patient details.");
+        }
+    });
+}
 
 
+    // wt will happpen when continue of patient details modal is clicked
+    $("#btnPatientDetailsContinue").click(function () {
+
+        var phone = $("#patientPhone").val();
+        var dateOfBirth = $("#patientDateOfBirth").val();
+        var gender = $("#patientGender").val();
+        var address = $("#patientAddress").val();
+
+        if (phone === "") {
+            alert("Please enter phone number.");
+            return;
+        }
+
+        if (dateOfBirth === "") {
+            alert("Please enter date of birth.");
+            return;
+        }
+
+        if (gender === "") {
+            alert("Please select gender.");
+            return;
+        }
+
+        if (address === "") {
+            alert("Please enter address.");
+            return;
+        }
+
+        // Put patient details into summary
+        $("#summaryPhone").text(phone);
+        $("#summaryDateOfBirth").text(dateOfBirth);
+        $("#summaryGender").text(gender);
+        $("#summaryAddress").text(address);
+
+        $("#patientDetailsModal").modal("hide");
+        $("#bookingSummaryModal").modal("show");
+    });
+
+    
+    //
+    $("#btnConfirmBooking").click(function () {
+
+    var slotId = $("#appointmentSlot").val();
+
+    var phone = $("#patientPhone").val();
+    var dateOfBirth = $("#patientDateOfBirth").val();
+    var gender = $("#patientGender").val();
+    var address = $("#patientAddress").val();
+
+    $.ajax({
+        url: '@Url.Action("ConfirmBooking", "Patient")',
+        type: 'POST',
+        data: {
+            slotId: slotId,
+            phone: phone,
+            dateOfBirth: dateOfBirth,
+            gender: gender,
+            address: address
+        },
+
+        success: function (response) {
+
+            if (response.success) {
+
+                alert("Appointment booked successfully.");
+
+                $("#bookingSummaryModal").modal("hide");
+                $("#doctorModal").modal("hide");
+
+            } else {
+
+                alert(response.message);
+            }
+        },
+
+        error: function () {
+            alert("Unable to book appointment.");
+        }
+    });
+});
 </script>

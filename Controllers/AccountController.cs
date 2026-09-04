@@ -31,7 +31,7 @@ namespace AppointmentBooking.Controllers
 
             if(user == null || user.Password != lm.Password)
             {
-                TempData["message"] = " enter Valid credentials correctly ";
+                TempData["message"] = " enter Valid credentials correctly "; // viewbag?
                 return View(lm);
             }
 
@@ -64,11 +64,7 @@ namespace AppointmentBooking.Controllers
 
            //  FormsAuthentication.SignOut();
 
-            ModelState.AddModelError(
-                "",
-                "Invalid user role."
-            );
-
+            ModelState.AddModelError ( "","Invalid user role."  );
             return View(lm);
 
            
@@ -111,10 +107,7 @@ namespace AppointmentBooking.Controllers
         {
             bool isLoggedIn = Session["UserId"] != null;
 
-            return Json(
-                new { isLoggedIn = isLoggedIn },
-                JsonRequestBehavior.AllowGet
-            );
+            return Json(new { isLoggedIn = isLoggedIn },JsonRequestBehavior.AllowGet );
         }
     }
 }

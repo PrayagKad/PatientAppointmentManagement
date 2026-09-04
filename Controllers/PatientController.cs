@@ -41,6 +41,74 @@ namespace AppointmentBooking.Controllers
         }
 
 
+        public JsonResult GetPatientDetails()
+        {
+
+            int UserId = Convert.ToInt32(Session["UserId"]);
+
+            DataTable PatientDetails = PatientBLL.GetPatientDetails(UserId);
+
+            return Json(JsonConvert.SerializeObject(PatientDetails), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult ConfirmBooking(  int slotId, string phone,DateTime dateOfBirth, string gender, string address)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Please login first."
+                });
+            }
+
+            int userId = Convert.ToInt32(Session["UserId"]);
+
+            int result = PatientBLL.ConfirmBooking(
+                userId,
+                slotId,
+                phone,
+                dateOfBirth,
+                gender,
+                address
+            );
+
+            if (result >=  1)
+            {
+                return Json(new
+                {
+                    success = true,
+                    message = "Appointment booked successfully."
+                });
+            }
+
+            if (result == -1)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Patient details not found."
+                });
+            }
+
+            if (result == -2)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Sorry, this slot is no longer available."
+                });
+            }
+
+            return Json(new
+            {
+                success = false,
+                message = "Unable to book appointment."
+            });
+        }
+
+
 
     }
 }
