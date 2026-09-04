@@ -14,6 +14,12 @@ namespace AppointmentBooking.Controllers
         // GET: Account
         public ActionResult Login()
         {
+
+            // remove cached pages 
+            Response.Cache.SetCacheability( System.Web.HttpCacheability.NoCache);
+
+            Response.Cache.SetNoStore();
+
             return View();
         }
 
@@ -25,7 +31,7 @@ namespace AppointmentBooking.Controllers
 
             if(user == null || user.Password != lm.Password)
             {
-                TempData["message"] = " enter Valid credentials correctly ";
+                TempData["message"] = " enter Valid credentials correctly "; // viewbag?
                 return View(lm);
             }
 
@@ -43,7 +49,7 @@ namespace AppointmentBooking.Controllers
 
             if (user.Role == "Admin")
             {
-                return RedirectToAction("DashBoard", "Admin");
+                return RedirectToAction("ADashBoard", "Admin");
             }
 
             if (user.Role == "Doctor")
@@ -53,16 +59,12 @@ namespace AppointmentBooking.Controllers
 
             if (user.Role == "Patient")
             {
-                return RedirectToAction("Home", "Patient");
+                return RedirectToAction("Dashboard", "Patient");
             }
 
-            FormsAuthentication.SignOut();
+           //  FormsAuthentication.SignOut();
 
-            ModelState.AddModelError(
-                "",
-                "Invalid user role."
-            );
-
+            ModelState.AddModelError ( "","Invalid user role."  );
             return View(lm);
 
            
@@ -95,6 +97,17 @@ namespace AppointmentBooking.Controllers
             }
             return View(rm);
            
+        }
+
+
+        
+        // check if patient has logged in 
+        [HttpGet]
+        public JsonResult IsLoggedIn()
+        {
+            bool isLoggedIn = Session["UserId"] != null;
+
+            return Json(new { isLoggedIn = isLoggedIn },JsonRequestBehavior.AllowGet );
         }
     }
 }

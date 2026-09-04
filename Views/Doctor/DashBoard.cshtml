@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewBag.Title = "Doctor Dashboard";
 }
 
@@ -17,13 +15,13 @@
         </div>
 
         <div>
-            @Html.ActionLink(
-                "Manage Schedule",
-                "SetSchedule",
-                "Doctor",
-                null,
-                new { @class = "btn btn-primary me-2" }
-            )
+
+            <!-- Manage Schedule -->
+            <button type="button"
+                    class="btn btn-primary me-2"
+                    id="btnManageSchedule">
+                Manage Schedule
+            </button>
 
             @Html.ActionLink(
                 "Manage Profile",
@@ -32,9 +30,11 @@
                 null,
                 new { @class = "btn btn-secondary" }
             )
+
         </div>
 
     </div>
+
 
     <div class="card">
 
@@ -55,11 +55,13 @@
                 </thead>
 
                 <tbody id="appointmentBody">
+
                     <tr>
                         <td colspan="3" class="text-center">
                             Loading...
                         </td>
                     </tr>
+
                 </tbody>
 
             </table>
@@ -70,15 +72,646 @@
 
 </div>
 
+
+<!-- ================================= -->
+<!-- Manage Schedule Modal -->
+<!-- ================================= -->
+
+<div class="modal fade"
+     id="scheduleModal"
+     tabindex="-1"
+     aria-labelledby="scheduleModalLabel"
+     aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <!-- Header -->
+            <div class="modal-header">
+
+                <h5 class="modal-title"
+                    id="scheduleModalLabel">
+                    Create Schedule
+                </h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <!-- Body -->
+            <div class="modal-body">
+
+                <form id="scheduleForm">
+
+                    <!-- Schedule Date -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Schedule From
+                        </label>
+
+                        <input type="date"
+                               id="scheduleFrom"
+                               class="form-control"
+                               required />
+
+                        <div class="text-danger"
+                             id="scheduleFromError">
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Schedule To
+                        </label>
+
+                        <input type="date"
+                               id="scheduleTo"
+                               class="form-control"
+                               required />
+
+                        <div class="text-danger"
+                             id="scheduleToError">
+                        </div>
+
+                    </div>
+
+
+                    <!-- select days of week to create schedule -->
+                    <div class="mb-3">
+
+                        <label class="form-label">
+                            Apply Schedule On
+                        </label>
+
+                        <div class="row">
+
+                            <div class="col-md-6">
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Monday"
+                                           id="monday">
+
+                                    <label class="form-check-label"
+                                           for="monday">
+                                        Monday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Tuesday"
+                                           id="tuesday">
+
+                                    <label class="form-check-label"
+                                           for="tuesday">
+                                        Tuesday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Wednesday"
+                                           id="wednesday">
+
+                                    <label class="form-check-label"
+                                           for="wednesday">
+                                        Wednesday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Thursday"
+                                           id="thursday">
+
+                                    <label class="form-check-label"
+                                           for="thursday">
+                                        Thursday
+                                    </label>
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-md-6">
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Friday"
+                                           id="friday">
+
+                                    <label class="form-check-label"
+                                           for="friday">
+                                        Friday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Saturday"
+                                           id="saturday">
+
+                                    <label class="form-check-label"
+                                           for="saturday">
+                                        Saturday
+                                    </label>
+                                </div>
+
+                                <div class="form-check">
+                                    <input class="form-check-input day-check"
+                                           type="checkbox"
+                                           value="Sunday"
+                                           id="sunday">
+
+                                    <label class="form-check-label"
+                                           for="sunday">
+                                        Sunday
+                                    </label>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="text-danger"
+                             id="dayError">
+                        </div>
+
+                    </div>
+
+
+                    <!-- Start / End -->
+                    <div class="row">
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="startTime"
+                                   class="form-label">
+                                Start Time
+                            </label>
+
+                            <input type="time"
+                                   id="startTime"
+                                   class="form-control"
+                                   required />
+
+                            <div class="text-danger"
+                                 id="startTimeError">
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-3">
+
+                            <label for="endTime"
+                                   class="form-label">
+                                End Time
+                            </label>
+
+                            <input type="time"
+                                   id="endTime"
+                                   class="form-control"
+                                   required />
+
+                            <div class="text-danger"
+                                 id="endTimeError">
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Slot Duration -->
+                    <div class="mb-3">
+
+                        <label for="slotDuration"
+                               class="form-label">
+                            Slot Duration
+                        </label>
+
+                        <select id="slotDuration"
+                                class="form-control"
+                                required>
+
+                            <option value="">
+                                Select slot duration
+                            </option>
+
+                            <option value="15">
+                                15 Minutes
+                            </option>
+
+                            <option value="30">
+                                30 Minutes
+                            </option>
+
+                            <option value="45">
+                                45 Minutes
+                            </option>
+
+                            <option value="60">
+                                60 Minutes
+                            </option>
+
+                        </select>
+
+                        <div class="text-danger"
+                             id="slotDurationError">
+                        </div>
+
+                    </div>
+
+                    <div class="mb-3">
+
+                        <label class="form-label">Breaks</label>
+
+                        <div id="breakContainer">
+
+                            <div class="row mb-2 break-row">
+
+                                <div class="col-md-4">
+                                    <input type="time"
+                                           class="form-control break-start"
+                                           placeholder="Start Time">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <input type="time"
+                                           class="form-control break-end"
+                                           placeholder="End Time">
+                                </div>
+
+                                <div class="col-md-3">
+                                    <input type="text"
+                                           class="form-control break-reason"
+                                           placeholder="Reason">
+                                </div>
+
+                                <div class="col-md-2">
+                                    <button type="button"
+                                            class="btn btn-danger btnRemoveBreak">
+                                        Remove
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <button type="button"
+                                class="btn btn-outline-secondary btn-sm"
+                                id="btnAddBreak">
+                            + Add Break
+                        </button>
+
+                    </div>
+
+
+                    <!-- General Error -->
+                    <div id="scheduleError"
+                         class="text-danger mb-2">
+                    </div>
+
+                </form>
+
+            </div>
+
+
+            <!-- Footer -->
+            <div class="modal-footer">
+
+                <button type="button"
+                        class="btn btn-secondary"
+                        id="Cancelbtn">
+
+                    Cancel
+                </button>
+
+                <button type="button"
+                        class="btn btn-primary"
+                        id="btnCreateSchedule">
+                    Create Schedule
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
 @section Scripts
 {
     <script>
 
         $(document).ready(function () {
 
+            // Load today's appointments
             loadTodayAppointments();
 
+
+
+            // Open schedule modal
+            $("#btnManageSchedule").click(function () {
+
+                clearScheduleErrors();
+
+                $("#scheduleModal").modal("show");
+
+            });
+
+
+            // Create schedule
+            $("#btnCreateSchedule").click(function () {
+
+                if (!validateSchedule())
+                    return;
+
+                createSchedule();
+
+            });
+
+            $("#Cancelbtn").click(function () {
+
+                $("#scheduleModal").modal("hide");
+
+            });
+
+            $("#btnAddBreak").click(function () {
+
+                var row = $(".break-row:first").clone();
+
+                row.find("input").val("");
+
+                $("#breakContainer").append(row);
+
+            });
+
         });
+        // remove break
+        $(document).on("click", ".btnRemoveBreak", function () {
+
+            if ($(".break-row").length > 1) {
+
+                $(this)
+                    .closest(".break-row")
+                    .remove();
+
+            }
+
+        });
+
+
+        // =========================================
+        // Validate Schedule
+        // =========================================
+
+        function validateSchedule() {
+
+            clearScheduleErrors();
+
+            var from = $("#scheduleFrom").val();
+            var to = $("#scheduleTo").val();
+
+            var start = $("#startTime").val();
+            var end = $("#endTime").val();
+
+            var duration = $("#slotDuration").val();
+
+            var valid = true;
+
+
+            if (from === "") {
+
+                $("#scheduleFromError")
+                    .text("Please select start date.");
+
+                valid = false;
+            }
+
+
+            if (to === "") {
+
+                $("#scheduleToError")
+                    .text("Please select end date.");
+
+                valid = false;
+            }
+
+
+            if (from !== "" && to !== "") {
+
+                if (from > to) {
+
+                    $("#scheduleToError")
+                        .text("End date must be after start date.");
+
+                    valid = false;
+                }
+            }
+
+
+            if ($(".day-check:checked").length === 0) {
+
+                $("#dayError")
+                    .text("Please select at least one day.");
+
+                valid = false;
+            }
+
+
+            if (start === "") {
+
+                $("#startTimeError")
+                    .text("Please select start time.");
+
+                valid = false;
+            }
+
+
+            if (end === "") {
+
+                $("#endTimeError")
+                    .text("Please select end time.");
+
+                valid = false;
+            }
+
+
+            if (duration === "") {
+
+                $("#slotDurationError")
+                    .text("Please select slot duration.");
+
+                valid = false;
+            }
+
+
+            if (start !== "" && end !== "") {
+
+                if (start >= end) {
+
+                    $("#endTimeError")
+                        .text("End time must be after start time.");
+
+                    valid = false;
+                }
+            }
+
+
+            return valid;
+        }
+
+
+        // =========================================
+        // Create Schedule
+        // =========================================
+        function createSchedule() {
+
+            var breaks = [];
+
+            $(".break-row").each(function () {
+
+                var start = $(this).find(".break-start").val();
+                var end = $(this).find(".break-end").val();
+                var reason = $(this).find(".break-reason").val();
+
+                if (start !== "" && end !== "") {
+
+                    breaks.push({
+                        StartTime: start,
+                        EndTime: end,
+                        Reason: reason
+                    });
+
+                }
+
+            });
+
+
+            var days = [];
+
+            $(".day-check:checked").each(function () {
+
+                days.push($(this).val());
+
+            });
+
+
+            var scheduleData = {
+
+                ScheduleFrom:
+                    $("#scheduleFrom").val(),
+
+                ScheduleTo:
+                    $("#scheduleTo").val(),
+
+                Days: days,
+
+                StartTime:
+                    $("#startTime").val(),
+
+                EndTime:
+                    $("#endTime").val(),
+
+                SlotDurationMinutes:
+                    $("#slotDuration").val(),
+
+                Breaks: breaks
+
+            };
+
+
+            $.ajax({
+
+                url: '@Url.Action("SetSchedule", "Doctor")',
+
+                type: 'POST',
+
+                data: scheduleData,
+
+                success: function (response) {
+
+                    if (response.success) {
+
+                        $("#scheduleModal").modal("hide");
+
+                        $("#scheduleForm")[0].reset();
+
+                        $("#breakContainer").empty();
+
+                        alert(response.message);
+
+                    }
+                    else {
+
+                        $("#scheduleError")
+                            .text(response.message);
+
+                    }
+
+                },
+
+                error: function () {
+
+                    $("#scheduleError")
+                        .text("Unable to create schedule.");
+
+                }
+
+            });
+        }
+
+
+
+        // =========================================
+        // Clear Schedule Errors
+        // =========================================
+
+        function clearScheduleErrors() {
+
+            $("#scheduleFromError").text("");
+
+            $("#scheduleToError").text("");
+
+            $("#dayError").text("");
+
+            $("#startTimeError").text("");
+
+            $("#endTimeError").text("");
+
+            $("#slotDurationError").text("");
+
+            $("#scheduleError").text("");
+
+        }
+
+        // =========================================
+        // Today's Appointments
+        // =========================================
 
         function loadTodayAppointments() {
 

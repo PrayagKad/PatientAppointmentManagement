@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -14,7 +15,7 @@ namespace AppointmentBooking.DAL
     public class ExecuteSp
     {
 
-        public static int ExecuteNonQuery(string connection, string spname, Dictionary<string, object> param = null)
+        public static int ExecuteNonQuery(string connection, string spname, Dictionary<string, object> param = null , DataTable breakTable = null)
         {
             try
             {
@@ -32,9 +33,24 @@ namespace AppointmentBooking.DAL
                             }
 
                         }
+                         // for doctor breaks only , 
+                        if (breakTable != null)
+                        {
+                            SqlParameter breakParameter =
+                                cmd.Parameters.AddWithValue(
+                                    "@Breaks",
+                                    breakTable);  //  @Breaks is not a normal parameter, t is a table containing multiple rows of type dbo.DoctorBreakType.
+
+                            breakParameter.SqlDbType =
+                                SqlDbType.Structured;
+
+                            breakParameter.TypeName =
+                                "dbo.DoctorBreakType";
+                        }
 
                         con.Open();
 
+                        // Get RETURN value from stored procedure
                         return cmd.ExecuteNonQuery();
 
                     }
@@ -46,6 +62,14 @@ namespace AppointmentBooking.DAL
                 {
                     return -1;
                 }
+                string msg = e.ToString();
+
+            }
+            catch(Exception e)
+            {
+                Console.Out.WriteLine(e.ToString());
+                return - 100;
+
             }
 
             return 0;
@@ -53,6 +77,8 @@ namespace AppointmentBooking.DAL
 
 
         }
+
+
 
         public static DataTable ExecuteSelectBy(string connection, string spname, Dictionary<string, object> param = null)
         {
@@ -71,7 +97,7 @@ namespace AppointmentBooking.DAL
                         {
                             foreach (var i in param)
                             {
-                                cmd.Parameters.AddWithValue(i.Key, i.Value);
+                                cmd.Parameters.AddWithValue(i.Key, i.Value ?? DBNull.Value);
                             }
                         }
                         SqlDataAdapter da = new SqlDataAdapter(cmd);
@@ -88,6 +114,88 @@ namespace AppointmentBooking.DAL
 
                 return null;
             }
+
+
+        }
+
+
+        // for sps that return errorcodes
+        public static int ExecuteNonQueryErrorCode(string connection, string spname, Dictionary<string, object> param = null, DataTable dateTable =null , DataTable breakTable = null)
+        {
+            try
+            {
+                using (SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings[connection].ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(spname, con))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+
+                        if (param != null)
+                        {
+                            foreach (var i in param)
+                            {
+                                cmd.Parameters.AddWithValue(i.Key, i.Value);
+                            }
+
+                        }
+
+                        if (dateTable != null)
+                        {
+                            SqlParameter dateParameter =
+                                cmd.Parameters.AddWithValue(
+                                    "@ScheduleDates",
+                                    dateTable);
+
+                            dateParameter.SqlDbType =
+                                SqlDbType.Structured;
+
+                            dateParameter.TypeName =
+                                "dbo.ScheduleDateType";
+                        }
+
+                        // for doctor breaks only , 
+                        if (breakTable != null)
+                        {
+                            SqlParameter breakParameter =
+                                cmd.Parameters.AddWithValue(
+                                    "@Breaks",
+                                    breakTable);  //  @Breaks is not a normal parameter, t is a table containing multiple rows of type dbo.DoctorBreakType.
+
+                            breakParameter.SqlDbType =
+                                SqlDbType.Structured;
+
+                            breakParameter.TypeName =
+                                "dbo.DoctorBreakType";
+                        }
+
+
+
+                        // handle errors as sp return number errors
+
+                        SqlParameter returnParameter = cmd.Parameters.Add("@ReturnValue", SqlDbType.Int);
+                        returnParameter.Direction = ParameterDirection.ReturnValue;
+
+                        con.Open();
+
+                        cmd.ExecuteNonQuery();
+
+
+                        // Get RETURN value from stored procedure
+                        return (int)returnParameter.Value;
+
+                    }
+                }
+            }
+            catch (SqlException e)
+            {
+                if (e.Number == 50001)
+                {
+                    return -1;
+                }
+            }
+            return 0;
+
+
 
 
         }

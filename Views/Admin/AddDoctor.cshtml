@@ -1,0 +1,337 @@
+﻿@model AppointmentBooking.ViewModels.AddDoctorViewModel
+
+@{
+    ViewBag.Title = "Add Doctor";
+}
+
+<div class="container mt-4">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8">
+
+            <div class="card shadow-sm">
+
+                <div class="card-header">
+                    <h3 class="mb-0">Add Doctor</h3>
+                </div>
+                <h3>@TempData["msg"]</h3>
+
+                <div class="card-body">
+
+                    @using (Html.BeginForm(
+                        "AddDoctor",
+                        "Admin",
+                        FormMethod.Post,
+                        new { enctype = "multipart/form-data" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @Html.ValidationSummary(
+                            true,
+                            "",
+                            new { @class = "text-danger mb-3" }
+                        )
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            @Html.LabelFor(
+                                m => m.FullName,
+                                new { @class = "form-label" })
+
+                            @Html.TextBoxFor(
+                                m => m.FullName,
+                                new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter full name"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                m => m.FullName,
+                                "",
+                                new { @class = "text-danger" })
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            @Html.LabelFor(
+                                m => m.Email,
+                                new { @class = "form-label" })
+
+                            @Html.TextBoxFor(
+                                m => m.Email,
+                                new
+                                {
+                                    @class = "form-control",
+                                    type = "email",
+                                    placeholder = "Enter email"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                m => m.Email,
+                                "",
+                                new { @class = "text-danger" })
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            @Html.LabelFor(
+                                m => m.Phone,
+                                new { @class = "form-label" })
+
+                            @Html.TextBoxFor(
+                                m => m.Phone,
+                                new
+                                {
+                                    @class = "form-control",
+                                    placeholder = "Enter phone number"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                m => m.Phone,
+                                "",
+                                new { @class = "text-danger" })
+                        </div>
+
+                        <div class="row">
+
+                            <!-- Password -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.Password,
+                                    new { @class = "form-label" })
+
+                                @Html.PasswordFor(
+                                    m => m.Password,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Enter password"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.Password,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.ConfirmPassword,
+                                    new { @class = "form-label" })
+
+                                @Html.PasswordFor(
+                                    m => m.ConfirmPassword,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "Confirm password"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.ConfirmPassword,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <!-- Specialization -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.Specialization,
+                                    new { @class = "form-label" })
+
+                                @Html.TextBoxFor(
+                                    m => m.Specialization,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "e.g. Cardiologist"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.Specialization,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                            <!-- Qualification -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.Qualification,
+                                    new { @class = "form-label" })
+
+                                @Html.TextBoxFor(
+                                    m => m.Qualification,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        placeholder = "e.g. MBBS, MD"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.Qualification,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+
+                            <!-- Experience -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.ExperienceYears,
+                                    new { @class = "form-label" })
+
+                                @Html.TextBoxFor(
+                                    m => m.ExperienceYears,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        type = "number",
+                                        min = "0",
+                                        placeholder = "Years of experience"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.ExperienceYears,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                            <!-- Consultation Fee -->
+                            <div class="col-md-6 mb-3">
+
+                                @Html.LabelFor(
+                                    m => m.ConsultationFee,
+                                    new { @class = "form-label" })
+
+                                @Html.TextBoxFor(
+                                    m => m.ConsultationFee,
+                                    new
+                                    {
+                                        @class = "form-control",
+                                        type = "number",
+                                        min = "0",
+                                        step = "0.01",
+                                        placeholder = "Consultation fee"
+                                    })
+
+                                @Html.ValidationMessageFor(
+                                    m => m.ConsultationFee,
+                                    "",
+                                    new { @class = "text-danger" })
+
+                            </div>
+
+                        </div>
+
+                        <!-- Clinic Address -->
+                        <div class="mb-3">
+
+                            @Html.LabelFor(
+                                m => m.ClinicAddress,
+                                new { @class = "form-label" })
+
+                            @Html.TextAreaFor(
+                                m => m.ClinicAddress,
+                                new
+                                {
+                                    @class = "form-control",
+                                    rows = "3",
+                                    placeholder = "Enter clinic address"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                m => m.ClinicAddress,
+                                "",
+                                new { @class = "text-danger" })
+
+                        </div>
+
+                        <!-- About -->
+                        <div class="mb-3">
+
+                            @Html.LabelFor(
+                                m => m.About,
+                                new { @class = "form-label" })
+
+                            @Html.TextAreaFor(
+                                m => m.About,
+                                new
+                                {
+                                    @class = "form-control",
+                                    rows = "4",
+                                    placeholder = "Enter information about the doctor"
+                                })
+
+                            @Html.ValidationMessageFor(
+                                m => m.About,
+                                "",
+                                new { @class = "text-danger" })
+
+                        </div>
+
+                        <!-- Profile Image -->
+                        <div class="mb-4">
+
+                            <label class="form-label">
+                                Profile Image
+                            </label>
+
+                            <input type="file"
+                                   name="ProfileImageFile"
+                                   class="form-control"
+                                   accept="image/*" />
+
+                        </div>
+
+                        <!-- Buttons -->
+                        <div class="d-flex justify-content-between">
+
+                            @Html.ActionLink(
+                                "Back",
+                                "DashBoard",
+                                "Admin",
+                                null,
+                                new { @class = "btn btn-secondary" })
+
+                            <button type="submit"
+                                    class="btn btn-primary">
+                                Add Doctor
+                            </button>
+
+                        </div>
+                    }
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+@section Scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}
