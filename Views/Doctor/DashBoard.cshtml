@@ -16,11 +16,11 @@
 
         <div>
 
-            <!-- Manage Schedule -->
+            <!-- ADD  Schedule -->
             <button type="button"
                     class="btn btn-primary me-2"
-                    id="btnManageSchedule">
-                Manage Schedule
+                    id="btnAddSchedule">
+                Add Schedule
             </button>
 
             @Html.ActionLink(
@@ -36,36 +36,55 @@
     </div>
 
 
-    <div class="card">
+    <div class="row">
 
-        <div class="card-header">
-            <h4 class="mb-0">Today's Appointments</h4>
+        <!-- Today's Appointments -->
+        <div class="col-md-6">
+            <div class="panel panel-default">
+
+                <div class="panel-heading">
+                    <h4>Today's Appointments</h4>
+                </div>
+
+                <div class="panel-body">
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>Patient</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="appointmentBody">
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    Loading...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
         </div>
 
-        <div class="card-body">
 
-            <table class="table table-bordered">
+        <!-- Schedule Calendar -->
+        <div class="col-md-6">
+            <div class="panel panel-default">
 
-                <thead>
-                    <tr>
-                        <th>Time</th>
-                        <th>Patient</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
+                <div class="panel-heading">
+                    <h4>My Schedule</h4>
+                </div>
 
-                <tbody id="appointmentBody">
+                <div class="panel-body">
 
-                    <tr>
-                        <td colspan="3" class="text-center">
-                            Loading...
-                        </td>
-                    </tr>
+                    <div id="doctorCalendar"></div>
 
-                </tbody>
-
-            </table>
-
+                </div>
+            </div>
         </div>
 
     </div>
@@ -419,12 +438,26 @@
 
 </div>
 
-
+<style>
+    .scheduled-date {
+        background-color: #5cb85c !important;
+        border-color: #4cae4c !important;
+    }
+</style>
 
 
 
 @section Scripts
 {
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css" />
+
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.js"></script>
+
+
     <script>
 
         $(document).ready(function () {
@@ -432,10 +465,12 @@
             // Load today's appointments
             loadTodayAppointments();
 
+            loadDoctorCalendar();
+
 
 
             // Open schedule modal
-            $("#btnManageSchedule").click(function () {
+            $("#btnAddSchedule").click(function () {
 
                 clearScheduleErrors();
 
@@ -471,6 +506,9 @@
             });
 
         });
+
+
+
         // remove break
         $(document).on("click", ".btnRemoveBreak", function () {
 
@@ -485,10 +523,9 @@
         });
 
 
-        // =========================================
+        // =--------------------------------------
         // Validate Schedule
-        // =========================================
-
+        // -------------------------
         function validateSchedule() {
 
             clearScheduleErrors();
@@ -586,9 +623,9 @@
         }
 
 
-        // =========================================
+        // =====================
         // Create Schedule
-        // =========================================
+        // ==========
         function createSchedule() {
 
             var breaks = [];
@@ -687,10 +724,7 @@
 
 
 
-        // =========================================
         // Clear Schedule Errors
-        // =========================================
-
         function clearScheduleErrors() {
 
             $("#scheduleFromError").text("");
@@ -709,10 +743,7 @@
 
         }
 
-        // =========================================
-        // Today's Appointments
-        // =========================================
-
+        // Todays Appointments
         function loadTodayAppointments() {
 
             $.ajax({
@@ -768,6 +799,51 @@
 
             });
         }
+
+
+
+
+
+      function loadDoctorCalendar() {
+
+    $.ajax({
+        url: '@Url.Action("GetDoctorScheduleCalendar", "Doctor")',
+        type: 'GET',
+
+        success: function (response) {
+            console.log("Calendar response:", response);
+            var schedules = JSON.parse(response);
+            var events = [];
+
+            $.each(schedules, function (index, schedule) {
+
+                events.push({
+                    id: schedule.ScheduleId,
+                    title: "Scheduled",
+                    start: schedule.ScheduleDate,
+                    allDay: true,
+                    className: "scheduled-date"
+                });
+
+            });
+
+            $("#doctorCalendar").fullCalendar({
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month'
+                },
+
+                events: events
+            });
+        },
+
+        error: function (xhr) {
+            console.log(xhr.responseText);
+            alert("Unable to load doctor schedules.");
+        }
+    });
+}
 
     </script>
 }

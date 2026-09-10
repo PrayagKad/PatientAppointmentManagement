@@ -286,6 +286,64 @@
             </div>
         </div>
     </div>
+
+    <!--my appointments modal -->
+    <div class="modal fade" id="myAppointmentsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">My Appointments</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="appointmentsLoading">
+                        Loading appointments...
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped"
+                               id="appointmentsTable"
+                               style="display:none;">
+
+
+                            <!-- thead ??-->
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="appointmentsBody">
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div id="noAppointments"
+                         class="alert alert-info"
+                         style="display:none;">
+                        You don't have any appointments.
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -298,11 +356,7 @@
 
     $(document).ready(function () {
 
-
-
         loadDoctors();
-
-
     });
 
 
@@ -738,7 +792,7 @@
         $("#bookingSummaryModal").modal("show");
     });
 
-    
+
     //
     $("#btnConfirmBooking").click(function () {
 
@@ -780,4 +834,62 @@
         }
     });
 });
+
+    // get appointment deatils eg scheduled or completed appointments
+    $("#btnMyAppointments").click(function () {
+
+    $("#myAppointmentsModal").modal("show");
+
+    loadPatientAppointments();
+});
+
+     
+ function loadPatientAppointments() {
+
+    $("#appointmentsLoading").show();
+    $("#appointmentsTable").hide();
+    $("#noAppointments").hide();
+    $("#appointmentsBody").empty();
+
+    $.ajax({
+        url: '@Url.Action("GetPatientAppointments", "Patient")',
+        type: 'GET',
+
+        success: function (response) {
+
+            $("#appointmentsLoading").hide();
+
+            var appointments = JSON.parse(response);
+
+            if (appointments.length === 0) {
+
+                $("#noAppointments").show();
+                return;
+            }
+
+            $.each(appointments, function (index, appointment) {
+
+                var row = "<tr>" +
+                    "<td>" + appointment.DoctorName + "</td>" +
+                    "<td>" + appointment.Specialization + "</td>" +
+                    "<td>" + appointment.AppointmentDate + "</td>" +
+                    "<td>" + appointment.StartTime + "</td>" +
+                    "<td>" + appointment.EndTime + "</td>" +
+                    "<td>" + appointment.Status + "</td>" +
+                    "</tr>";
+
+                $("#appointmentsBody").append(row);
+            });
+
+            $("#appointmentsTable").show();
+        },
+
+        error: function () {
+
+            $("#appointmentsLoading").hide();
+
+            alert("Unable to load appointments.");
+        }
+    });
+}
 </script>
