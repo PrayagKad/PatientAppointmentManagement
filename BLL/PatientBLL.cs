@@ -101,7 +101,19 @@ namespace AppointmentBooking.BLL
                 ExecuteSp.ExecuteNonQueryErrorCode(conn, spName, param);
         }
 
+        // get appointments or the pateint
+        public static DataTable GetPatientAppointments(int userId)
+        {
+            string spName = "sp_GetPatientAppointments";
 
+            Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+            parameters.Add("@UserId", userId);
+
+            DataTable dt = ExecuteSp.ExecuteSelectBy(conn, spName, parameters);
+
+            return dt;
+        }
 
     }
 }
