@@ -23,23 +23,70 @@ namespace AppointmentBooking.Controllers
             return View();
         }
 
-        //get Patients for a doctor
-        public JsonResult GetTodayAppointments()
+        [HttpGet]
+        public JsonResult GetDoctorAppointments()
         {
-            int userId = Convert.ToInt32(Session["UserId"]);
+            try
+            {
+                if (Session["UserId"] == null)
+                {
+                    return Json(
+                        new
+                        {
+                            success = false,
+                            message = "Please login first."
+                        },
+                        JsonRequestBehavior.AllowGet
+                    );
+                }
 
-            Log.Information("Fetching today's appointments | UserId: {UserId}", userId);
+                int userId = Convert.ToInt32(Session["UserId"]);
 
-            var appointments = DoctorBLL.GetTodayAppointments(userId);
+                DataTable appointments =
+                    DoctorBLL.GetDoctorAppointments(userId);
 
-            Log.Information("Today's appointments fetched successfully | UserId: {UserId}", userId);
+                Log.Information(
+                    "Appointments retrieved. Count: {Count}",
+                    appointments.Rows.Count
+                );
 
-            return Json(
-                appointments,
-                JsonRequestBehavior.AllowGet
-            );
+                var appointmentList = appointments.AsEnumerable()
+        .Select(row => new
+        {
+            AppointmentId = row.Field<int>("AppointmentId"),
+            ScheduleDate = row.Field<DateTime>("ScheduleDate").ToString("yyyy-MM-dd"),
+            StartTime = row.Field<TimeSpan>("StartTime").ToString(),
+            EndTime = row.Field<TimeSpan>("EndTime").ToString(),
+            PatientName = row.Field<string>("PatientName"),
+            Phone = row.Field<string>("Phone"),
+            Status = row.Field<string>("Status")
+        })
+        .ToList();
+
+                return Json(
+                    appointmentList,
+                    JsonRequestBehavior.AllowGet
+                );
+            }
+            catch (Exception ex)
+            {
+                Log.Error(
+                    ex,
+                    "Error while getting doctor appointments."
+                );
+
+                return Json(
+                    new
+                    {
+                        success = false,
+                        message = ex.Message
+                    },
+                    JsonRequestBehavior.AllowGet
+                );
+            }
         }
 
+        
         [HttpPost]
         public JsonResult SetSchedule(SetScheduleViewModel sm)
         {
@@ -136,5 +183,86 @@ namespace AppointmentBooking.Controllers
             return Json(JsonConvert.SerializeObject(schedules), JsonRequestBehavior.AllowGet
             );
         }
+
+        [HttpGet]
+        public ActionResult GetMedicalRecord(int appointmentId)
+        {
+            try
+            {
+                Log.Information( "Loading medical record for AppointmentId: {AppointmentId}", appointmentId );
+
+                MedicalRecords_ViewModel medicalRecord = DoctorBLL.GetMedicalRecord(appointmentId);
+
+                if (medicalRecord == null)
+                {
+                    Log.Information( "No medical record found for AppointmentId: {AppointmentId}", appointmentId );
+
+                    medicalRecord = new MedicalRecords_ViewModel
+                    {
+                        AppointmentId = appointmentId
+                    };
+                }
+
+                return PartialView( "_MedicalRecords", medicalRecord  );
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex,"Error loading medical record for AppointmentId: {AppointmentId}",  appointmentId );
+
+                return new HttpStatusCodeResult(  500,"Unable to load medical record." );
+            }
+        }
+
+
+        [HttpPost]
+        public JsonResult CompleteAppointment(MedicalRecords_ViewModel model)
+        {
+            try
+            {
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString() != "Doctor")
+                {
+                    Log.Warning("Unauthorized access {UserId}");
+                    return Json(new { success = false, message = "Unauthorized access." });
+            
+                }
+
+                int result = DoctorBLL.CompleteAppointment( model.AppointmentId,  model.Diagnosis,  model.DoctorNotes, model.Medicines, model.Procedures,  model.Advice );
+
+                if (result == 1)
+                {
+                    Log.Information("Appointment completed successfully. AppointmentId: {AppointmentId}", model.AppointmentId);
+                    return Json(new
+                    {
+                        success = true,
+                        message = " Appointment completed successfully"
+
+                    });
+                }
+                else
+                {
+                    Log.Warning("Appointment could not be completed. AppointmentId: {AppointmentId}, ResultCode: {ResultCode}", model.AppointmentId, result);
+
+                    return Json(new
+                    {
+                        success = false,
+                        message = " Appointment cannot be completed"
+
+                    });
+                }
+          
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error(  ex, "Error completing AppointmentId: {AppointmentId}",  model.AppointmentId    );
+
+                return Json(new
+                {
+                    success = false,
+                    message = "Unable to complete appointment."
+                });
+            }
+        }
+
     }
 }
