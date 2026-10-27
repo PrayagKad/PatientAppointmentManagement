@@ -21,7 +21,7 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">
+                <a class="navbar-brand" href="@Url.Action("DashBoard", "Patient", new { area = "" })">
                     <span class="brand-mark"><span class="glyphicon glyphicon-plus"></span></span>
                     MediBook
                 </a>
@@ -42,7 +42,7 @@
                     }
                     else
                     {
-                        <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+                        <li>@Html.ActionLink("Find a Doctor", "DashBoard", "Patient", new { area = "" }, null)</li>
                         <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
                         <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
                     }
@@ -57,6 +57,16 @@
                                 <strong>@fullName</strong>
                                 <span>@role</span>
                             </span>
+                        </li>
+                        <li>
+                            @using (Html.BeginForm("Logout", "Account", new { area = "" }, FormMethod.Post, new { @class = "navbar-logout" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-log-out"></span>
+                                    Logout
+                                </button>
+                            }
                         </li>
                     }
                     else

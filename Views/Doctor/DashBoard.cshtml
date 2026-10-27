@@ -153,38 +153,42 @@
 
                 <form id="scheduleForm">
 
-                    <!-- Schedule Date -->
-                    <div class="mb-3">
+                    <!-- Schedule Date Range -->
+                    <div class="row schedule-row">
 
-                        <label class="form-label">
-                            Schedule From
-                        </label>
+                        <div class="col-sm-6 mb-3">
 
-                        <input type="date"
-                               id="scheduleFrom"
-                               class="form-control"
-                               required />
+                            <label class="form-label" for="scheduleFrom">
+                                Schedule From
+                            </label>
 
-                        <div class="text-danger"
-                             id="scheduleFromError">
+                            <input type="date"
+                                   id="scheduleFrom"
+                                   class="form-control"
+                                   required />
+
+                            <div class="text-danger"
+                                 id="scheduleFromError">
+                            </div>
+
                         </div>
 
-                    </div>
 
+                        <div class="col-sm-6 mb-3">
 
-                    <div class="mb-3">
+                            <label class="form-label" for="scheduleTo">
+                                Schedule To
+                            </label>
 
-                        <label class="form-label">
-                            Schedule To
-                        </label>
+                            <input type="date"
+                                   id="scheduleTo"
+                                   class="form-control"
+                                   required />
 
-                        <input type="date"
-                               id="scheduleTo"
-                               class="form-control"
-                               required />
+                            <div class="text-danger"
+                                 id="scheduleToError">
+                            </div>
 
-                        <div class="text-danger"
-                             id="scheduleToError">
                         </div>
 
                     </div>
@@ -197,100 +201,42 @@
                             Apply Schedule On
                         </label>
 
-                        <div class="row">
+                        <div class="day-picker">
 
-                            <div class="col-md-6">
+                            <label class="day-pill" for="monday">
+                                <input class="day-check" type="checkbox" value="Monday" id="monday">
+                                <span>Mon</span>
+                            </label>
 
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Monday"
-                                           id="monday">
+                            <label class="day-pill" for="tuesday">
+                                <input class="day-check" type="checkbox" value="Tuesday" id="tuesday">
+                                <span>Tue</span>
+                            </label>
 
-                                    <label class="form-check-label"
-                                           for="monday">
-                                        Monday
-                                    </label>
-                                </div>
+                            <label class="day-pill" for="wednesday">
+                                <input class="day-check" type="checkbox" value="Wednesday" id="wednesday">
+                                <span>Wed</span>
+                            </label>
 
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Tuesday"
-                                           id="tuesday">
+                            <label class="day-pill" for="thursday">
+                                <input class="day-check" type="checkbox" value="Thursday" id="thursday">
+                                <span>Thu</span>
+                            </label>
 
-                                    <label class="form-check-label"
-                                           for="tuesday">
-                                        Tuesday
-                                    </label>
-                                </div>
+                            <label class="day-pill" for="friday">
+                                <input class="day-check" type="checkbox" value="Friday" id="friday">
+                                <span>Fri</span>
+                            </label>
 
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Wednesday"
-                                           id="wednesday">
+                            <label class="day-pill" for="saturday">
+                                <input class="day-check" type="checkbox" value="Saturday" id="saturday">
+                                <span>Sat</span>
+                            </label>
 
-                                    <label class="form-check-label"
-                                           for="wednesday">
-                                        Wednesday
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Thursday"
-                                           id="thursday">
-
-                                    <label class="form-check-label"
-                                           for="thursday">
-                                        Thursday
-                                    </label>
-                                </div>
-
-                            </div>
-
-
-                            <div class="col-md-6">
-
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Friday"
-                                           id="friday">
-
-                                    <label class="form-check-label"
-                                           for="friday">
-                                        Friday
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Saturday"
-                                           id="saturday">
-
-                                    <label class="form-check-label"
-                                           for="saturday">
-                                        Saturday
-                                    </label>
-                                </div>
-
-                                <div class="form-check">
-                                    <input class="form-check-input day-check"
-                                           type="checkbox"
-                                           value="Sunday"
-                                           id="sunday">
-
-                                    <label class="form-check-label"
-                                           for="sunday">
-                                        Sunday
-                                    </label>
-                                </div>
-
-                            </div>
+                            <label class="day-pill" for="sunday">
+                                <input class="day-check" type="checkbox" value="Sunday" id="sunday">
+                                <span>Sun</span>
+                            </label>
 
                         </div>
 
@@ -301,10 +247,10 @@
                     </div>
 
 
-                    <!-- Start / End -->
-                    <div class="row">
+                    <!-- Start / End / Slot Duration -->
+                    <div class="row schedule-row">
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-sm-4 mb-3">
 
                             <label for="startTime"
                                    class="form-label">
@@ -323,7 +269,7 @@
                         </div>
 
 
-                        <div class="col-md-6 mb-3">
+                        <div class="col-sm-4 mb-3">
 
                             <label for="endTime"
                                    class="form-label">
@@ -341,81 +287,80 @@
 
                         </div>
 
-                    </div>
 
+                        <div class="col-sm-4 mb-3">
 
-                    <!-- Slot Duration -->
-                    <div class="mb-3">
+                            <label for="slotDuration"
+                                   class="form-label">
+                                Slot Duration
+                            </label>
 
-                        <label for="slotDuration"
-                               class="form-label">
-                            Slot Duration
-                        </label>
+                            <select id="slotDuration"
+                                    class="form-control"
+                                    required>
 
-                        <select id="slotDuration"
-                                class="form-control"
-                                required>
+                                <option value="">
+                                    Select
+                                </option>
 
-                            <option value="">
-                                Select slot duration
-                            </option>
+                                <option value="15">
+                                    15 Minutes
+                                </option>
 
-                            <option value="15">
-                                15 Minutes
-                            </option>
+                                <option value="30">
+                                    30 Minutes
+                                </option>
 
-                            <option value="30">
-                                30 Minutes
-                            </option>
+                                <option value="45">
+                                    45 Minutes
+                                </option>
 
-                            <option value="45">
-                                45 Minutes
-                            </option>
+                                <option value="60">
+                                    60 Minutes
+                                </option>
 
-                            <option value="60">
-                                60 Minutes
-                            </option>
+                            </select>
 
-                        </select>
+                            <div class="text-danger"
+                                 id="slotDurationError">
+                            </div>
 
-                        <div class="text-danger"
-                             id="slotDurationError">
                         </div>
 
                     </div>
 
                     <div class="mb-3">
 
-                        <label class="form-label">Breaks</label>
+                        <label class="form-label">Breaks <small>(optional)</small></label>
+
+                        <div class="break-header">
+                            <span>Start</span>
+                            <span>End</span>
+                            <span>Reason</span>
+                            <span></span>
+                        </div>
 
                         <div id="breakContainer">
 
-                            <div class="row mb-2 break-row">
+                            <div class="break-row">
 
-                                <div class="col-md-4">
-                                    <input type="time"
-                                           class="form-control break-start"
-                                           placeholder="Start Time">
-                                </div>
+                                <input type="time"
+                                       class="form-control break-start"
+                                       aria-label="Break start time">
 
-                                <div class="col-md-3">
-                                    <input type="time"
-                                           class="form-control break-end"
-                                           placeholder="End Time">
-                                </div>
+                                <input type="time"
+                                       class="form-control break-end"
+                                       aria-label="Break end time">
 
-                                <div class="col-md-3">
-                                    <input type="text"
-                                           class="form-control break-reason"
-                                           placeholder="Reason">
-                                </div>
+                                <input type="text"
+                                       class="form-control break-reason"
+                                       placeholder="e.g. Lunch">
 
-                                <div class="col-md-2">
-                                    <button type="button"
-                                            class="btn btn-danger btnRemoveBreak">
-                                        Remove
-                                    </button>
-                                </div>
+                                <button type="button"
+                                        class="btn btnRemoveBreak"
+                                        title="Remove break">
+                                    &times;
+                                </button>
 
                             </div>
 
@@ -431,9 +376,7 @@
 
 
                     <!-- General Error -->
-                    <div id="scheduleError"
-                         class="text-danger mb-2">
-                    </div>
+                    <div id="scheduleError" class="text-danger mb-2"></div>
 
                 </form>
 
@@ -444,7 +387,7 @@
             <div class="modal-footer">
 
                 <button type="button"
-                        class="btn btn-secondary"
+                        class="btn btn-default"
                         id="Cancelbtn">
 
                     Cancel
@@ -723,7 +666,8 @@
 
                         $("#scheduleForm")[0].reset();
 
-                        $("#breakContainer").empty();
+                        // Keep one blank break row so "Add Break" still has a row to clone
+                        $(".break-row:not(:first)").remove();
 
                         alert(response.message);
 
@@ -851,12 +795,14 @@
                                 sortable: false,
                                 formatter: function (cellValue, options, rowObject) {
 
+                                    var label = rowObject.Status === "Completed" ? "Edit Record" : "Manage";
+
                                     return '<button type="button" ' +
                                            'class="btn btn-primary btn-xs" ' +
                                            'onclick="manageAppointment(' +
                                            rowObject.AppointmentId +
                                            ')">' +
-                                           'Manage</button>';
+                                           label + '</button>';
                                 }
                             }
                         ],
@@ -988,6 +934,43 @@
                     console.log(xhr.responseText);
 
                     alert("Unable to complete appointment.");
+                }
+            });
+        });
+
+
+        // Save edits to the record of an already completed appointment
+        $(document).on("click", "#btnUpdateMedicalRecord", function () {
+
+            var model = {
+                AppointmentId: $("#prescriptionAppointmentId").val(),
+                Diagnosis: $("#diagnosis").val(),
+                DoctorNotes: $("#doctorNotes").val(),
+                Medicines: $("#medicines").val(),
+                Procedures: $("#procedures").val(),
+                Advice: $("#advice").val()
+            };
+
+            $.ajax({
+                url: '@Url.Action("UpdateMedicalRecord", "Doctor")',
+                type: 'POST',
+                data: model,
+
+                success: function (response) {
+
+                    alert(response.message);
+
+                    if (response.success) {
+
+                        $("#appointmentModal").modal("hide");
+                    }
+                },
+
+                error: function (xhr) {
+
+                    console.log(xhr.responseText);
+
+                    alert("Unable to update medical record.");
                 }
             });
         });

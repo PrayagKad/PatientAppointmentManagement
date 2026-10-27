@@ -1,27 +1,96 @@
 ﻿@{
     ViewBag.Title = "Patient Dashboard";
+    bool isLoggedIn = Session["UserId"] != null;
+    bool isPatient = Session["Role"] != null && Session["Role"].ToString() == "Patient";
 }
 
 <div class="container">
 
-    <!-- Header -->
-    <div class="page-header-card">
-        <div>
-            <h2>Patient Dashboard</h2>
-            <p>
-                Welcome, @Session["FullName"]
-            </p>
-        </div>
+    @if (isLoggedIn)
+    {
+        <!-- Header -->
+        <div class="page-header-card">
+            <div>
+                <h2>Patient Dashboard</h2>
+                <p>
+                    Welcome, @Session["FullName"]
+                </p>
+            </div>
 
-        <div class="page-actions">
-            <button type="button"
-                    class="btn btn-primary"
-                    id="btnMyAppointments">
-                <span class="glyphicon glyphicon-calendar"></span>
-                My Appointments
-            </button>
+            @if (isPatient)
+            {
+                <div class="page-actions">
+                    <button type="button"
+                            class="btn btn-primary"
+                            id="btnMyAppointments">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                        My Appointments
+                    </button>
+                </div>
+            }
         </div>
-    </div>
+    }
+    else
+    {
+        <!-- Guest: intro + central login for patients, doctors and admins -->
+        <div class="guest-hero">
+
+            <div class="guest-intro">
+                <h2>Book a doctor appointment in minutes</h2>
+                <p>
+                    Browse our doctors below, pick an available slot and confirm your visit.
+                    Sign in to book and to see your appointments.
+                </p>
+            </div>
+
+            <div class="guest-login">
+
+                <h4>Sign in</h4>
+                <p class="guest-login-hint">Patients, doctors and admins sign in here.</p>
+
+                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginEmail">Email</label>
+                        <input type="email"
+                               id="loginEmail"
+                               name="Email"
+                               class="form-control"
+                               placeholder="Enter your email"
+                               required />
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="loginPassword">Password</label>
+                        <input type="password"
+                               id="loginPassword"
+                               name="Password"
+                               class="form-control"
+                               placeholder="Enter your password"
+                               required />
+                    </div>
+
+                    <div class="guest-login-row">
+                        <label class="guest-remember">
+                            <input type="checkbox" name="RememberMe" value="true" />
+                            Remember me
+                        </label>
+                        <input type="hidden" name="RememberMe" value="false" />
+
+                        @Html.ActionLink("Create account", "RegisterPatient", "Account")
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">
+                        Login
+                    </button>
+                }
+
+            </div>
+
+        </div>
+    }
 
     <!-- Doctors -->
     <div class="panel panel-default">
@@ -322,6 +391,7 @@
                                     <th>Start Time</th>
                                     <th>End Time</th>
                                     <th>Status</th>
+                                    <th>Record</th>
                                 </tr>
                             </thead>
 
@@ -337,6 +407,29 @@
                         You don't have any appointments.
                     </div>
 
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- medical record modal (read-only, completed appointments) -->
+    <div class="modal fade" id="medicalRecordModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">Medical Record</h4>
+                </div>
+
+                <div class="modal-body" id="patientRecordContainer">
                 </div>
 
             </div>
@@ -897,6 +990,11 @@
                 var status = appointment.Status || "";
                 var statusClass = "status-" + status.toLowerCase().replace(/\s+/g, "-");
 
+                // Medical record is available once the doctor completes the appointment
+                var recordButton = status === "Completed"
+                    ? "<button type=\"button\" class=\"btn btn-soft-primary btn-xs btnViewRecord\" data-appointmentid=\"" + appointment.AppointmentId + "\">View Record</button>"
+                    : "<span class=\"text-muted\">&mdash;</span>";
+
                 var row = "<tr>" +
                     "<td>" + appointment.DoctorName + "</td>" +
                     "<td>" + appointment.Specialization + "</td>" +
@@ -904,6 +1002,7 @@
                     "<td>" + appointment.StartTime + "</td>" +
                     "<td>" + appointment.EndTime + "</td>" +
                     "<td><span class=\"status-badge " + statusClass + "\">" + status + "</span></td>" +
+                    "<td>" + recordButton + "</td>" +
                     "</tr>";
 
                 $("#appointmentsBody").append(row);
@@ -920,4 +1019,47 @@
         }
     });
 }
+
+
+    // view the medical record of a completed appointment (read-only)
+    $(document).on("click", ".btnViewRecord", function () {
+
+        var appointmentId = $(this).data("appointmentid");
+
+        $("#patientRecordContainer").html(
+            '<div class="loading-state">Loading medical record...</div>'
+        );
+
+        $("#medicalRecordModal").modal("show");
+
+        $.ajax({
+            url: '@Url.Action("GetMedicalRecord", "Patient")',
+            type: 'GET',
+            data: {
+                appointmentId: appointmentId
+            },
+
+            success: function (response) {
+
+                $("#patientRecordContainer").html(response);
+            },
+
+            error: function (xhr) {
+
+                console.log(xhr.status);
+
+                $("#patientRecordContainer").html(
+                    '<div class="empty-state"><span class="text-danger">Unable to load medical record.</span></div>'
+                );
+            }
+        });
+    });
+
+    // record modal opens on top of My Appointments; keep that one scrollable after closing
+    $(document).on("hidden.bs.modal", "#medicalRecordModal", function () {
+
+        if ($("#myAppointmentsModal").hasClass("in")) {
+            $("body").addClass("modal-open");
+        }
+    });
 </script>

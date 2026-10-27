@@ -189,6 +189,27 @@ namespace AppointmentBooking.Controllers
         {
             try
             {
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString() != "Doctor")
+                {
+                    Log.Warning("Unauthorized medical record request | AppointmentId: {AppointmentId}", appointmentId);
+
+                    return new HttpStatusCodeResult(403, "Unauthorized access.");
+                }
+
+                int userId = Convert.ToInt32(Session["UserId"]);
+
+                // The appointment must belong to this doctor
+                DataRow appointment = DoctorBLL.GetDoctorAppointments(userId)
+                    .AsEnumerable()
+                    .FirstOrDefault(row => row.Field<int>("AppointmentId") == appointmentId);
+
+                if (appointment == null)
+                {
+                    Log.Warning("Medical record requested for another doctor's appointment | AppointmentId: {AppointmentId} | UserId: {UserId}", appointmentId, userId);
+
+                    return new HttpStatusCodeResult(403, "Unauthorized access.");
+                }
+
                 Log.Information( "Loading medical record for AppointmentId: {AppointmentId}", appointmentId );
 
                 MedicalRecords_ViewModel medicalRecord = DoctorBLL.GetMedicalRecord(appointmentId);
@@ -202,6 +223,8 @@ namespace AppointmentBooking.Controllers
                         AppointmentId = appointmentId
                     };
                 }
+
+                medicalRecord.Status = appointment.Field<string>("Status");
 
                 return PartialView( "_MedicalRecords", medicalRecord  );
             }
@@ -261,6 +284,42 @@ namespace AppointmentBooking.Controllers
                     success = false,
                     message = "Unable to complete appointment."
                 });
+            }
+        }
+
+
+        // Edit the medical record of an already completed appointment
+        [HttpPost]
+        public JsonResult UpdateMedicalRecord(MedicalRecords_ViewModel model)
+        {
+            try
+            {
+                if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString() != "Doctor")
+                {
+                    Log.Warning("Unauthorized medical record update | AppointmentId: {AppointmentId}", model.AppointmentId);
+                    return Json(new { success = false, message = "Unauthorized access." });
+                }
+
+                int userId = Convert.ToInt32(Session["UserId"]);
+
+                int result = DoctorBLL.UpdateMedicalRecord( model.AppointmentId, userId, model.Diagnosis, model.DoctorNotes, model.Medicines, model.Procedures, model.Advice );
+
+                if (result == 1)
+                {
+                    Log.Information("Medical record updated. AppointmentId: {AppointmentId}", model.AppointmentId);
+
+                    return Json(new { success = true, message = "Medical record updated successfully." });
+                }
+
+                Log.Warning("Medical record could not be updated. AppointmentId: {AppointmentId}, ResultCode: {ResultCode}", model.AppointmentId, result);
+
+                return Json(new { success = false, message = "Medical record cannot be updated." });
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error updating medical record. AppointmentId: {AppointmentId}", model.AppointmentId);
+
+                return Json(new { success = false, message = "Unable to update medical record." });
             }
         }
 

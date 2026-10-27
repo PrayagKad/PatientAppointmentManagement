@@ -137,10 +137,24 @@ namespace AppointmentBooking.Controllers
 
             Log.Information( "Login status checked | IsLoggedIn: {IsLoggedIn}", isLoggedIn );
 
-            return Json(new { 
-                isLoggedIn = isLoggedIn 
+            return Json(new {
+                isLoggedIn = isLoggedIn
             }, JsonRequestBehavior.AllowGet
             );
+        }
+
+
+        // POST: Account/Logout
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Logout()
+        {
+            Log.Information( "Logout | UserId: {UserId} | Role: {Role}", Session["UserId"], Session["Role"] );
+
+            Session.Clear();
+            Session.Abandon();
+
+            return RedirectToAction( "DashBoard", "Patient" );
         }
     }
 }

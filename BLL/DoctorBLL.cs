@@ -259,6 +259,36 @@ namespace AppointmentBooking.BLL
                 throw;
             }
         }
+
+        // Edit the record of an appointment that is already completed
+        public static int UpdateMedicalRecord(int appointmentId, int doctorUserId, string diagnosis, string doctorNotes, string medicines, string procedures, string advice)
+        {
+            string spName = "sp_UpdateMedicalRecord";
+
+            try
+            {
+                Log.Information("Updating medical record | AppointmentId: {AppointmentId} | DoctorUserId: {DoctorUserId}", appointmentId, doctorUserId);
+
+                Dictionary<string, object> parameters = new Dictionary<string, object>();
+
+                parameters.Add("@AppointmentId", appointmentId);
+                parameters.Add("@DoctorUserId", doctorUserId);
+                parameters.Add("@Diagnosis", diagnosis);
+                parameters.Add("@DoctorNotes", doctorNotes);
+                parameters.Add("@Medicines", medicines);
+                parameters.Add("@Procedures", procedures);
+                parameters.Add("@Advice", advice);
+
+                int result = ExecuteSp.ExecuteNonQueryErrorCode( conn, spName,  parameters );
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error updating medical record for AppointmentId: {AppointmentId}", appointmentId);
+                throw;
+            }
+        }
     }
     }
     

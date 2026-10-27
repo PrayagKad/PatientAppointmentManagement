@@ -28,5 +28,8 @@ namespace AppointmentBooking.ViewModels
         public string Procedures { get; set; }
 
         public string Advice { get; set; }
+
+        // Appointment status; a Completed appointment is edited instead of completed again
+        public string Status { get; set; }
     }
 }

@@ -2,8 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Data;
+using System.Web;
+using System.Web.Caching;
 using System.Web.Mvc;
 using AppointmentBooking.BLL;
+using AppointmentBooking.ViewModels;
 using Newtonsoft.Json;
 using Serilog;
 
@@ -11,6 +14,12 @@ namespace AppointmentBooking.Controllers
 {
     public class PatientController : Controller
     {
+        // Doctor list shown on the patient dashboard; cleared when a doctor is added
+        public const string DoctorsCacheKey = "Patient_AllDoctors";
+
+        private static readonly TimeSpan DoctorsCacheDuration = TimeSpan.FromMinutes(10);
+
+
         // GET: Patient
         public ActionResult DashBoard()
         {
@@ -23,13 +32,31 @@ namespace AppointmentBooking.Controllers
         [HttpGet]
         public JsonResult GetAllDoctors()
         {
+            string doctorsJson = HttpRuntime.Cache[DoctorsCacheKey] as string;
+
+            if (doctorsJson != null)
+            {
+                Log.Information("All doctors served from cache");
+
+                return Json(doctorsJson, JsonRequestBehavior.AllowGet);
+            }
+
             Log.Information("Fetching all doctors");
 
             DataTable doctors = PatientBLL.GetDoctors();
 
             Log.Information("All doctors fetched | Count: {Count}", doctors?.Rows.Count ?? 0);
 
-            return Json(JsonConvert.SerializeObject(doctors), JsonRequestBehavior.AllowGet);
+            doctorsJson = JsonConvert.SerializeObject(doctors);
+
+            HttpRuntime.Cache.Insert(
+                DoctorsCacheKey,
+                doctorsJson,
+                null,
+                DateTime.UtcNow.Add(DoctorsCacheDuration),
+                Cache.NoSlidingExpiration);
+
+            return Json(doctorsJson, JsonRequestBehavior.AllowGet);
         }
 
 
@@ -159,6 +186,56 @@ namespace AppointmentBooking.Controllers
             Log.Information("Patient appointments fetched | UserId: {UserId} | Count: {Count}", userId, appointments?.Rows.Count ?? 0);
 
             return Json(JsonConvert.SerializeObject(appointments), JsonRequestBehavior.AllowGet);
+        }
+
+
+        // Read-only medical record of one of the patient's own completed appointments
+        [HttpGet]
+        public ActionResult GetMedicalRecord(int appointmentId)
+        {
+            if (Session["UserId"] == null || Session["Role"] == null || Session["Role"].ToString() != "Patient")
+            {
+                Log.Warning("Medical record requested without patient login | AppointmentId: {AppointmentId}", appointmentId);
+
+                return new HttpStatusCodeResult(403, "Please login first.");
+            }
+
+            int userId = Convert.ToInt32(Session["UserId"]);
+
+            try
+            {
+                // The appointment must belong to this patient and be completed
+                DataRow appointment = PatientBLL.GetPatientAppointments(userId)
+                    .AsEnumerable()
+                    .FirstOrDefault(row => row.Field<int>("AppointmentId") == appointmentId);
+
+                if (appointment == null)
+                {
+                    Log.Warning("Medical record requested for another patient's appointment | AppointmentId: {AppointmentId} | UserId: {UserId}", appointmentId, userId);
+
+                    return new HttpStatusCodeResult(403, "Unauthorized access.");
+                }
+
+                if (appointment.Field<string>("Status") != "Completed")
+                {
+                    return new HttpStatusCodeResult(400, "Medical record is available after the appointment is completed.");
+                }
+
+                Log.Information("Patient viewing medical record | AppointmentId: {AppointmentId} | UserId: {UserId}", appointmentId, userId);
+
+                MedicalRecords_ViewModel medicalRecord = DoctorBLL.GetMedicalRecord(appointmentId)
+                    ?? new MedicalRecords_ViewModel { AppointmentId = appointmentId };
+
+                medicalRecord.Status = "Completed";
+
+                return PartialView("_MedicalRecords", medicalRecord);
+            }
+            catch (Exception ex)
+            {
+                Log.Error(ex, "Error loading patient medical record | AppointmentId: {AppointmentId} | UserId: {UserId}", appointmentId, userId);
+
+                return new HttpStatusCodeResult(500, "Unable to load medical record.");
+            }
         }
 
         //[HttpPost]

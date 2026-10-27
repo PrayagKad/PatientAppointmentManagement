@@ -3,6 +3,11 @@
 @{
     bool isDoctor = Session["Role"] != null &&
                     Session["Role"].ToString() == "Doctor";
+
+    bool isCompleted = Model.Status == "Completed";
+
+    Func<string, string> recordText = value =>
+        string.IsNullOrWhiteSpace(value) ? "Not recorded" : value;
 }
 
 <div class="prescription-container">
@@ -74,7 +79,7 @@
             else
             {
                 <div class="medical-record-value">
-                    @Model.Diagnosis
+                    @recordText(Model.Diagnosis)
                 </div>
             }
 
@@ -106,7 +111,7 @@
             else
             {
                 <div class="medical-record-value medical-record-large">
-                    @Model.DoctorNotes
+                    @recordText(Model.DoctorNotes)
                 </div>
             }
 
@@ -142,7 +147,7 @@
             else
             {
                 <div class="medical-record-value medical-record-prescription">
-                    @Model.Medicines
+                    @recordText(Model.Medicines)
                 </div>
             }
 
@@ -174,7 +179,7 @@
             else
             {
                 <div class="medical-record-value">
-                    @Model.Procedures
+                    @recordText(Model.Procedures)
                 </div>
             }
 
@@ -206,7 +211,7 @@
             else
             {
                 <div class="medical-record-value">
-                    @Model.Advice
+                    @recordText(Model.Advice)
                 </div>
             }
 
@@ -223,14 +228,28 @@
     {
         <div class="prescription-actions">
 
-            <button type="button"
-                    class="btn btn-success"
-                    id="btnCompleteAppointment">
+            @if (isCompleted)
+            {
+                <button type="button"
+                        class="btn btn-primary"
+                        id="btnUpdateMedicalRecord">
 
-                <span class="complete-icon">✓</span>
-                Complete Appointment
+                    <span class="complete-icon">✓</span>
+                    Save Changes
 
-            </button>
+                </button>
+            }
+            else
+            {
+                <button type="button"
+                        class="btn btn-success"
+                        id="btnCompleteAppointment">
+
+                    <span class="complete-icon">✓</span>
+                    Complete Appointment
+
+                </button>
+            }
 
         </div>
     }
