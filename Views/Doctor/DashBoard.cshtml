@@ -4,6 +4,8 @@
 
 <div class="container">
 
+    <link rel="stylesheet" href="~/Content/doctor.css" />
+
     <div class="d-flex justify-content-between align-items-center mb-4">
 
         <div>
@@ -43,28 +45,14 @@
             <div class="panel panel-default">
 
                 <div class="panel-heading">
-                    <h4>Today's Appointments</h4>
+                    <h4> Appointments</h4>
                 </div>
 
                 <div class="panel-body">
 
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Time</th>
-                                <th>Patient</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
+                    <table id="doctorAppointmentGrid"></table>
 
-                        <tbody id="appointmentBody">
-                            <tr>
-                                <td colspan="3" class="text-center">
-                                    Loading...
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div id="doctorAppointmentPager"></div>
 
                 </div>
             </div>
@@ -85,6 +73,42 @@
 
                 </div>
             </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade"
+     id="appointmentModal"
+     tabindex="-1"
+     role="dialog">
+
+    <div class="modal-dialog modal-lg" role="document">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <button type="button"
+                        class="close"
+                        data-dismiss="modal">
+                    &times;
+                </button>
+
+                <h4 class="modal-title">
+                    Manage Appointment
+                </h4>
+
+            </div>
+
+            <div class="modal-body"
+                 id="prescriptionContainer">
+
+                <!-- Prescription partial will be loaded here -->
+
+            </div>
+
         </div>
 
     </div>
@@ -449,7 +473,14 @@
 
 @section Scripts
 {
+    
+    
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/free-jqgrid@4.15.5/css/ui.jqgrid.min.css" />
 
+    <script src="https://cdn.jsdelivr.net/npm/free-jqgrid@4.15.5/js/jquery.jqgrid.min.js"></script>
+
+    
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/fullcalendar@3.10.2/dist/fullcalendar.min.css" />
 
@@ -463,7 +494,7 @@
         $(document).ready(function () {
 
             // Load today's appointments
-            loadTodayAppointments();
+            loadDoctorAppointments();
 
             loadDoctorCalendar();
 
@@ -744,106 +775,223 @@
         }
 
         // Todays Appointments
-        function loadTodayAppointments() {
+       function loadDoctorAppointments() {
 
             $.ajax({
-
-                url: '@Url.Action("GetTodayAppointments", "Doctor")',
-
+                url: '@Url.Action("GetDoctorAppointments", "Doctor")',
                 type: 'GET',
 
                 success: function (response) {
 
-                    var tbody = $("#appointmentBody");
+                    console.log("Appointments response:", response);
 
-                    tbody.empty();
-
-                    if (response.length === 0) {
-
-                        tbody.append(
-                            '<tr>' +
-                            '<td colspan="3" class="text-center">' +
-                            'No appointments for today' +
-                            '</td>' +
-                            '</tr>'
-                        );
-
+                    if (response.success === false) {
+                        alert(response.message);
                         return;
                     }
 
-                    $.each(response, function (index, appointment) {
+                    if ($("#doctorAppointmentGrid")[0].grid) {
+                        $("#doctorAppointmentGrid").jqGrid("GridUnload");
+                    }
 
-                        tbody.append(
-                            '<tr>' +
-                            '<td>' + appointment.Time + '</td>' +
-                            '<td>' + appointment.PatientName + '</td>' +
-                            '<td>' + appointment.Status + '</td>' +
-                            '</tr>'
-                        );
+                    $("#doctorAppointmentGrid").jqGrid({
+                        datatype: "local",
+                        data: response,
+
+                        colModel: [
+                            {
+                                label: "Appointment ID",
+                                name: "AppointmentId",
+                                key: true,
+                                hidden: true
+                            },
+                            {
+                                label: "Date",
+                                name: "ScheduleDate",
+                                width: 100,
+                                formatter: function (value) {
+                                    return value ? value.substring(0, 10) : "";
+                                }
+                            },
+                            {
+                                label: "Patient Name",
+                                name: "PatientName",
+                                width: 150
+                            },
+                            {
+                                label: "Start Time",
+                                name: "StartTime",
+                                width: 90,
+                                formatter: function (value) {
+                                    return value ? value.substring(0, 5) : "";
+                                }
+                            },
+                            {
+                                label: "End Time",
+                                name: "EndTime",
+                                width: 90,
+                                formatter: function (value) {
+                                    return value ? value.substring(0, 5) : "";
+                                }
+                            },
+                            {
+                                label: "Phone",
+                                name: "Phone",
+                                width: 120
+                            },
+                            {
+                                label: "Status",
+                                name: "Status",
+                                width: 100
+                            },
+                            {
+                                label: "Action",
+                                name: "Action",
+                                width: 100,
+                                sortable: false,
+                                formatter: function (cellValue, options, rowObject) {
+
+                                    return '<button type="button" ' +
+                                           'class="btn btn-primary btn-xs" ' +
+                                           'onclick="manageAppointment(' +
+                                           rowObject.AppointmentId +
+                                           ')">' +
+                                           'Manage</button>';
+                                }
+                            }
+                        ],
+
+                        height: "auto",
+                        rowNum: 10,
+                        pager: "#doctorAppointmentPager",
+                        viewrecords: true,
+                        autowidth: true,
+                        shrinkToFit: true,
+                        caption: "Appointments"
+                    });
+                },
+
+                error: function (xhr) {
+
+                    console.log(xhr.responseText);
+
+                    alert("Unable to load appointments.");
+                }
+            });
+}
+
+        function manageAppointment(appointmentId) {
+
+            console.log("Managing AppointmentId:", appointmentId);
+
+            $.ajax({
+                url: '@Url.Action("GetMedicalRecord", "Doctor")',
+                type: 'GET',
+                data: {
+                    appointmentId: appointmentId
+                },
+
+                success: function (response) {
+
+                    $("#prescriptionContainer").html(response);
+
+                    $("#appointmentModal").modal("show");
+                },
+
+                error: function (xhr) {
+
+                    console.log(xhr.responseText);
+
+                    alert("Unable to load medical record.");
+                }
+            });
+}
+
+
+
+
+
+    function loadDoctorCalendar() {
+
+            $.ajax({
+                url: '@Url.Action("GetDoctorScheduleCalendar", "Doctor")',
+                type: 'GET',
+
+                success: function (response) {
+                    console.log("Calendar response:", response);
+                    var schedules = JSON.parse(response);
+                    var events = [];
+
+                    $.each(schedules, function (index, schedule) {
+
+                        events.push({
+                            id: schedule.ScheduleId,
+                            title: "Scheduled",
+                            start: schedule.ScheduleDate,
+                            allDay: true,
+                            className: "scheduled-date"
+                        });
 
                     });
 
+                    $("#doctorCalendar").fullCalendar({
+                        header: {
+                            left: 'prev,next today',
+                            center: 'title',
+                            right: 'month'
+                        },
+
+                        events: events
+                    });
                 },
 
-                error: function () {
-
-                    $("#appointmentBody").html(
-                        '<tr>' +
-                        '<td colspan="3" class="text-center text-danger">' +
-                        'Unable to load appointments' +
-                        '</td>' +
-                        '</tr>'
-                    );
-
+                error: function (xhr) {
+                    console.log(xhr.responseText);
+                    alert("Unable to load doctor schedules.");
                 }
-
             });
         }
 
 
+        $(document).on("click", "#btnCompleteAppointment", function () {
 
+            var model = {
+                AppointmentId: $("#prescriptionAppointmentId").val(),
+                Diagnosis: $("#diagnosis").val(),
+                DoctorNotes: $("#doctorNotes").val(),
+                Medicines: $("#medicines").val(),
+                Procedures: $("#procedures").val(),
+                Advice: $("#advice").val()
+            };
 
+            $.ajax({
+                url: '@Url.Action("CompleteAppointment", "Doctor")',
+                type: 'POST',
+                data: model,
 
-      function loadDoctorCalendar() {
+                success: function (response) {
 
-    $.ajax({
-        url: '@Url.Action("GetDoctorScheduleCalendar", "Doctor")',
-        type: 'GET',
+                    if (response.success) {
 
-        success: function (response) {
-            console.log("Calendar response:", response);
-            var schedules = JSON.parse(response);
-            var events = [];
+                        alert(response.message);
 
-            $.each(schedules, function (index, schedule) {
+                        $("#appointmentModal").modal("hide");
 
-                events.push({
-                    id: schedule.ScheduleId,
-                    title: "Scheduled",
-                    start: schedule.ScheduleDate,
-                    allDay: true,
-                    className: "scheduled-date"
-                });
-
-            });
-
-            $("#doctorCalendar").fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month'
+                        loadDoctorAppointments();
+                    }
+                    else {
+                        alert(response.message);
+                    }
                 },
 
-                events: events
-            });
-        },
+                error: function (xhr) {
 
-        error: function (xhr) {
-            console.log(xhr.responseText);
-            alert("Unable to load doctor schedules.");
-        }
-    });
-}
+                    console.log(xhr.responseText);
+
+                    alert("Unable to complete appointment.");
+                }
+            });
+        });
 
     </script>
 }

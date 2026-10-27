@@ -160,6 +160,73 @@ namespace AppointmentBooking.Controllers
 
             return Json(JsonConvert.SerializeObject(appointments), JsonRequestBehavior.AllowGet);
         }
+
+        //[HttpPost]
+        //public JsonResult CancelAppointment(int appointmentId)
+        //{
+        //    try
+        //    {
+        //        if (Session["UserId"] == null ||
+        //            Session["Role"] == null ||
+        //            Session["Role"].ToString() != "Patient")
+        //        {
+        //            return Json(new
+        //            {
+        //                success = false,
+        //                message = "Unauthorized."
+        //            });
+        //        }
+
+        //        int userId = Convert.ToInt32(Session["UserId"]);
+
+        //        //int result = PatientBLL.CancelAppointment(
+        //        //    appointmentId,
+        //        //    userId
+        //        //);
+
+        //        if (result == 1)
+        //        {
+        //            Log.Information(
+        //                "Appointment cancelled successfully. AppointmentId: {AppointmentId}",
+        //                appointmentId
+        //            );
+
+        //            return Json(new
+        //            {
+        //                success = true,
+        //                message = "Appointment cancelled successfully."
+        //            });
+        //        }
+        //        else
+        //        {
+        //            Log.Warning(
+        //                "Appointment could not be cancelled. AppointmentId: {AppointmentId}, ResultCode: {ResultCode}",
+        //                appointmentId,
+        //                result
+        //            );
+
+        //            return Json(new
+        //            {
+        //                success = false,
+        //                message = "Appointment cannot be cancelled."
+        //            });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error(
+        //            ex,
+        //            "Error cancelling AppointmentId: {AppointmentId}",
+        //            appointmentId
+        //        );
+
+        //        return Json(new
+        //        {
+        //            success = false,
+        //            message = "Unable to cancel appointment."
+        //        });
+        //    }
+        //}
     }
 }
 

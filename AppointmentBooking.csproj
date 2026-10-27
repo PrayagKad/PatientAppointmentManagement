@@ -184,6 +184,7 @@
     <Compile Include="ViewModels\BreakViewModel.cs" />
     <Compile Include="ViewModels\DoctorViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\MedicalRecords_ViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
     <Compile Include="ViewModels\SetScheduleViewModel.cs" />
   </ItemGroup>
@@ -192,6 +193,7 @@
     <Content Include="Content\bootstrap-theme.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\doctor.css" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
@@ -230,6 +232,7 @@
     <Content Include="Views\Admin\ADashBoard.cshtml" />
     <Content Include="Views\Admin\AddDoctor.cshtml" />
     <Content Include="Views\Patient\DashBoard.cshtml" />
+    <Content Include="Views\Shared\_MedicalRecords.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
