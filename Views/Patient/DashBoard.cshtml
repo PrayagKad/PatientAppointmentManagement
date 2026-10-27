@@ -2,27 +2,26 @@
     ViewBag.Title = "Patient Dashboard";
 }
 
-<div class="container" style="margin-top:30px;">
+<div class="container">
 
     <!-- Header -->
-    <div class="row">
-        <div class="col-md-8">
+    <div class="page-header-card">
+        <div>
             <h2>Patient Dashboard</h2>
             <p>
                 Welcome, @Session["FullName"]
             </p>
         </div>
 
-        <div class="col-md-4 text-right">
+        <div class="page-actions">
             <button type="button"
                     class="btn btn-primary"
                     id="btnMyAppointments">
+                <span class="glyphicon glyphicon-calendar"></span>
                 My Appointments
             </button>
         </div>
     </div>
-
-    <hr />
 
     <!-- Doctors -->
     <div class="panel panel-default">
@@ -33,9 +32,9 @@
 
         <div class="panel-body">
 
-            <div class="row" id="doctorContainer">
+            <div class="row doctor-grid" id="doctorContainer">
 
-                <div class="col-md-12 text-center">
+                <div class="col-md-12 loading-state">
                     Loading doctors...
                 </div>
 
@@ -62,33 +61,31 @@
 
                     <h4 class="modal-title" id="doctorName">
                     </h4>
+                    <span class="modal-step">Step 1 of 3 &middot; Choose a date and time</span>
 
                 </div>
 
                 <div class="modal-body">
 
                     <!-- Doctor Information -->
-                    <div id="doctorInfo">
+                    <div id="doctorInfo" class="doctor-profile">
 
-                        <p>
-                            <strong>Specialization:</strong>
+                        <div class="profile-item">
+                            <small>Specialization</small>
                             <span id="doctorSpecialization"></span>
+                        </div>
 
-                        </p>
-
-                        <p>
-                            <strong>Qualification:</strong>
+                        <div class="profile-item">
+                            <small>Qualification</small>
                             <span id="doctorQualification"></span>
-                        </p>
+                        </div>
 
-                        <p>
-                            <strong>Experience:</strong>
-                            <span id="doctorExperience"></span>
-                        </p>
+                        <div class="profile-item">
+                            <small>Experience</small>
+                            <span><span id="doctorExperience"></span> Years</span>
+                        </div>
 
                     </div>
-
-                    <hr />
 
                     <!-- Available Dates -->
                     <div class="form-group">
@@ -160,6 +157,7 @@
                         &times;
                     </button>
                     <h4 class="modal-title">Patient Details</h4>
+                    <span class="modal-step">Step 2 of 3 &middot; Confirm your details</span>
                 </div>
 
                 <div class="modal-body">
@@ -244,28 +242,31 @@
                         &times;
                     </button>
                     <h4 class="modal-title">Confirm Appointment</h4>
+                    <span class="modal-step">Step 3 of 3 &middot; Review and book</span>
                 </div>
 
                 <div class="modal-body">
 
-                    <p>
-                        <strong>Doctor:</strong>
-                        <span id="summaryDoctor"></span>
-                    </p>
+                    <div class="summary-list">
 
-                    <p>
-                        <strong>Date:</strong>
-                        <span id="summaryDate"></span>
-                    </p>
+                        <div class="summary-row">
+                            <strong>Doctor</strong>
+                            <span id="summaryDoctor"></span>
+                        </div>
 
-                    <p>
-                        <strong>Time:</strong>
-                        <span id="summaryTime"></span>
-                    </p>
+                        <div class="summary-row">
+                            <strong>Date</strong>
+                            <span id="summaryDate"></span>
+                        </div>
 
-                    <hr />
+                        <div class="summary-row">
+                            <strong>Time</strong>
+                            <span id="summaryTime"></span>
+                        </div>
 
-                    <p>Are you sure you want to book this appointment?</p>
+                    </div>
+
+                    <p class="mb-0">Are you sure you want to book this appointment?</p>
 
                 </div>
 
@@ -286,6 +287,62 @@
             </div>
         </div>
     </div>
+
+    <!--my appointments modal -->
+    <div class="modal fade" id="myAppointmentsModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <button type="button"
+                            class="close"
+                            data-dismiss="modal">
+                        &times;
+                    </button>
+
+                    <h4 class="modal-title">My Appointments</h4>
+                </div>
+
+                <div class="modal-body">
+
+                    <div id="appointmentsLoading" class="loading-state">
+                        Loading appointments...
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table app-table"
+                               id="appointmentsTable"
+                               style="display:none;">
+
+                            <thead>
+                                <tr>
+                                    <th>Doctor</th>
+                                    <th>Specialization</th>
+                                    <th>Date</th>
+                                    <th>Start Time</th>
+                                    <th>End Time</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="appointmentsBody">
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                    <div id="noAppointments"
+                         class="alert alert-info"
+                         style="display:none;">
+                        You don't have any appointments.
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 </div>
 
 
@@ -298,11 +355,7 @@
 
     $(document).ready(function () {
 
-
-
         loadDoctors();
-
-
     });
 
 
@@ -326,8 +379,8 @@
                 if (doctors.length === 0) {
 
                     container.append(
-                        '<div class="col-md-12 text-center">' +
-                            '<p>No doctors available.</p>' +
+                        '<div class="col-md-12 empty-state">' +
+                            'No doctors available.' +
                         '</div>'
                     );
 
@@ -341,21 +394,27 @@
 
                     var photoUrl = doctor.ProfileImage;
 
-                    if (!photoUrl || photoUrl === "") {
-                        photoUrl = "/Content/images/default-doctor.png";
+                    var initial = doctor.FullName ? doctor.FullName.charAt(0).toUpperCase() : "?";
+
+                    // Initials show behind the photo, and stay visible when there is no photo or it fails to load
+                    var photo = '<div class="doctor-initials">' + initial + '</div>';
+
+                    if (photoUrl && photoUrl !== "") {
+                        photo +=
+                            '<img src="' + photoUrl + '"' +
+                            ' class="doctor-photo"' +
+                            ' alt="Dr. ' + doctor.FullName + '"' +
+                            ' onerror="this.style.display=\'none\'" />';
                     }
 
                     var card =
-                        '<div class="col-md-4" style="margin-bottom:20px;">' +
+                        '<div class="col-sm-6 col-md-4">' +
 
-                        '<div class="panel panel-info patient-doctor-card">' +
+                        '<div class="panel patient-doctor-card">' +
 
                         '<div class="doctor-photo-wrapper">' +
 
-                        '<img src="' + photoUrl + '"' +
-                        ' class="doctor-photo"' +
-                        ' alt="Dr. ' + doctor.FullName + '"' +
-                        ' onerror="this.src=\'/Content/images/default-doctor.png\'" />' +
+                        photo +
 
                         '<span class="doctor-available">' +
                         'Available' +
@@ -413,10 +472,10 @@
 
                 $("#doctorContainer").html(
 
-                    '<div class="col-md-12 text-center">' +
-                        '<p class="text-danger">' +
+                    '<div class="col-md-12 empty-state">' +
+                        '<span class="text-danger">' +
                             'Unable to load doctors.' +
-                        '</p>' +
+                        '</span>' +
                     '</div>'
 
                 );
@@ -434,7 +493,7 @@
         var panel = $(this).closest(".panel");
 
         var doctorName = panel
-            .find(".panel-heading h4")
+            .find(".doctor-name")
             .text();
 
         var specialization = panel
@@ -758,7 +817,7 @@
         $("#bookingSummaryModal").modal("show");
     });
 
-    
+
     //
     $("#btnConfirmBooking").click(function () {
 
@@ -800,4 +859,65 @@
         }
     });
 });
+
+    // get appointment deatils eg scheduled or completed appointments
+    $("#btnMyAppointments").click(function () {
+
+    $("#myAppointmentsModal").modal("show");
+
+    loadPatientAppointments();
+});
+
+     
+ function loadPatientAppointments() {
+
+    $("#appointmentsLoading").show();
+    $("#appointmentsTable").hide();
+    $("#noAppointments").hide();
+    $("#appointmentsBody").empty();
+
+    $.ajax({
+        url: '@Url.Action("GetPatientAppointments", "Patient")',
+        type: 'GET',
+
+        success: function (response) {
+
+            $("#appointmentsLoading").hide();
+
+            var appointments = JSON.parse(response);
+
+            if (appointments.length === 0) {
+
+                $("#noAppointments").show();
+                return;
+            }
+
+            $.each(appointments, function (index, appointment) {
+
+                var status = appointment.Status || "";
+                var statusClass = "status-" + status.toLowerCase().replace(/\s+/g, "-");
+
+                var row = "<tr>" +
+                    "<td>" + appointment.DoctorName + "</td>" +
+                    "<td>" + appointment.Specialization + "</td>" +
+                    "<td>" + appointment.AppointmentDate + "</td>" +
+                    "<td>" + appointment.StartTime + "</td>" +
+                    "<td>" + appointment.EndTime + "</td>" +
+                    "<td><span class=\"status-badge " + statusClass + "\">" + status + "</span></td>" +
+                    "</tr>";
+
+                $("#appointmentsBody").append(row);
+            });
+
+            $("#appointmentsTable").show();
+        },
+
+        error: function () {
+
+            $("#appointmentsLoading").hide();
+
+            alert("Unable to load appointments.");
+        }
+    });
+}
 </script>

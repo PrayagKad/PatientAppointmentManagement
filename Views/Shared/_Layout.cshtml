@@ -1,14 +1,19 @@
-﻿<!DOCTYPE html>
+﻿@{
+    string role = Session["Role"] != null ? Session["Role"].ToString() : null;
+    string fullName = Session["FullName"] != null ? Session["FullName"].ToString() : "";
+    string initial = fullName.Length > 0 ? fullName.Substring(0, 1).ToUpper() : "?";
+}
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <title>@ViewBag.Title - MediBook</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-default navbar-fixed-top app-navbar">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -16,22 +21,57 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                <a class="navbar-brand" href="@Url.Action("Index", "Home", new { area = "" })">
+                    <span class="brand-mark"><span class="glyphicon glyphicon-plus"></span></span>
+                    MediBook
+                </a>
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    @if (role == "Admin")
+                    {
+                        <li>@Html.ActionLink("Dashboard", "ADashBoard", "Admin", new { area = "" }, null)</li>
+                    }
+                    else if (role == "Doctor")
+                    {
+                        <li>@Html.ActionLink("Dashboard", "DashBoard", "Doctor", new { area = "" }, null)</li>
+                    }
+                    else if (role == "Patient")
+                    {
+                        <li>@Html.ActionLink("Dashboard", "DashBoard", "Patient", new { area = "" }, null)</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Home", "Index", "Home", new { area = "" }, null)</li>
+                        <li>@Html.ActionLink("About", "About", "Home", new { area = "" }, null)</li>
+                        <li>@Html.ActionLink("Contact", "Contact", "Home", new { area = "" }, null)</li>
+                    }
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right">
+                    @if (role != null)
+                    {
+                        <li class="navbar-user">
+                            <span class="user-avatar">@initial</span>
+                            <span class="user-meta">
+                                <strong>@fullName</strong>
+                                <span>@role</span>
+                            </span>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Login", "Login", "Account", new { area = "" }, null)</li>
+                        <li>@Html.ActionLink("Register", "RegisterPatient", "Account", new { area = "" }, new { @class = "nav-cta" })</li>
+                    }
                 </ul>
             </div>
         </div>
     </div>
     <div class="container body-content">
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        <footer class="app-footer">
+            <p>&copy; @DateTime.Now.Year MediBook &middot; Patient Appointment Management</p>
         </footer>
     </div>
 

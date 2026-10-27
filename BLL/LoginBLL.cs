@@ -1,10 +1,12 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using AppointmentBooking.Models;
 using AppointmentBooking.DAL;
 using System.Data;
+using Serilog;
 
 namespace AppointmentBooking.BLL
 {
@@ -16,12 +18,17 @@ namespace AppointmentBooking.BLL
         {
             string sp_name = "sp_LoginUser";
 
+            Log.Information("Login user lookup started | Email: {Email}", Email);
+
             Dictionary<string, object> ds = new Dictionary<string, object>();
             ds.Add("@Email", Email);
-            DataTable dt = ExecuteSp.ExecuteSelectBy(conn,sp_name,ds);
+            DataTable dt = ExecuteSp.ExecuteSelectBy(conn, sp_name, ds);
 
             if (dt == null || dt.Rows.Count == 0)
+            {
+                Log.Warning("Login user not found | Email: {Email}", Email);
                 return null;
+            }
 
             DataRow row = dt.Rows[0];
 
@@ -35,9 +42,12 @@ namespace AppointmentBooking.BLL
                 isActive = Convert.ToBoolean(row["IsActive"])
             };
 
+            Log.Information("Login user found | UserId: {UserId} | Role: {Role}", user.UserId, user.Role);
+
             return user;
 
         }
 
     }
 }
+

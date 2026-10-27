@@ -1,0 +1,651 @@
+﻿/* =========================================================
+   DOCTOR DASHBOARD
+   doctor.css
+   Modern Hospital / Doctor Admin Theme
+   ========================================================= */
+
+:root {
+    --doctor-primary: #1677ff;
+    --doctor-primary-dark: #0f5dcc;
+    --doctor-primary-soft: #eaf3ff;
+    --doctor-success: #16a34a;
+    --doctor-success-soft: #ecfdf3;
+    --doctor-warning: #f59e0b;
+    --doctor-warning-soft: #fff8e6;
+    --doctor-danger: #dc2626;
+    --doctor-danger-soft: #fef2f2;
+    --doctor-purple: #7c3aed;
+    --doctor-purple-soft: #f3eefe;
+    --doctor-text: #172033;
+    --doctor-text-light: #64748b;
+    --doctor-border: #e6ebf2;
+    --doctor-background: #f4f7fb;
+    --doctor-white: #ffffff;
+    --doctor-radius: 14px;
+    --doctor-shadow: 0 5px 18px rgba(15, 23, 42, 0.06);
+}
+
+
+/* Global theme (header card, buttons, panels, modals, forms,
+   status badges) lives in app.css. */
+
+
+/* =========================================================
+   STATISTICS CARDS
+   Optional - ready for future dashboard statistics
+   ========================================================= */
+
+.dashboard-stat-card {
+    position: relative;
+    min-height: 112px;
+    padding: 20px;
+    background: #fff;
+    border: 1px solid var(--doctor-border);
+    border-radius: var(--doctor-radius);
+    box-shadow: var(--doctor-shadow);
+    overflow: hidden;
+}
+
+    .dashboard-stat-card .stat-title {
+        color: var(--doctor-text-light);
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .dashboard-stat-card .stat-value {
+        display: block;
+        margin-top: 6px;
+        color: var(--doctor-text);
+        font-size: 27px;
+        font-weight: 700;
+    }
+
+    .dashboard-stat-card .stat-icon {
+        position: absolute;
+        right: 18px;
+        top: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: var(--doctor-primary-soft);
+        color: var(--doctor-primary);
+        text-align: center;
+        line-height: 44px;
+    }
+
+    .dashboard-stat-card.success .stat-icon {
+        color: var(--doctor-success);
+        background: var(--doctor-success-soft);
+    }
+
+    .dashboard-stat-card.warning .stat-icon {
+        color: var(--doctor-warning);
+        background: var(--doctor-warning-soft);
+    }
+
+    .dashboard-stat-card.danger .stat-icon {
+        color: var(--doctor-danger);
+        background: var(--doctor-danger-soft);
+    }
+
+
+/* =========================================================
+   DASHBOARD PANELS
+   ========================================================= */
+
+.row > [class*="col-"] {
+    margin-bottom: 22px;
+}
+
+
+/* =========================================================
+   APPOINTMENT GRID - JQGRID
+   ========================================================= */
+
+#doctorAppointmentGrid {
+    width: 100% !important;
+}
+
+.ui-jqgrid {
+    width: 100% !important;
+    border: none !important;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+    .ui-jqgrid .ui-jqgrid-view {
+        border: none;
+    }
+
+    .ui-jqgrid .ui-jqgrid-hdiv {
+        border: none;
+        background: #f8fafc;
+    }
+
+    .ui-jqgrid .ui-jqgrid-htable {
+        height: 44px;
+    }
+
+        .ui-jqgrid .ui-jqgrid-htable th {
+            padding: 0 8px;
+            color: #64748b;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: .4px;
+            border: none;
+        }
+
+    .ui-jqgrid .ui-jqgrid-bdiv {
+        border: none;
+    }
+
+    .ui-jqgrid tr.jqgrow {
+        height: 48px;
+        border-bottom: 1px solid #eef2f7;
+    }
+
+        .ui-jqgrid tr.jqgrow td {
+            padding: 10px 8px;
+            color: #334155;
+            font-size: 13px;
+            border: none;
+        }
+
+        .ui-jqgrid tr.jqgrow:hover {
+            background: #f8fbff;
+        }
+
+    .ui-jqgrid .btn-xs {
+        padding: 5px 11px;
+        font-size: 11px;
+        border-radius: 6px;
+    }
+
+
+/* =========================================================
+   JQGRID PAGER
+   ========================================================= */
+
+.ui-jqgrid .ui-jqgrid-pager {
+    height: 42px;
+    padding: 7px 0;
+    background: #fff;
+    border: none;
+}
+
+.ui-jqgrid .ui-pg-table {
+    font-size: 12px;
+}
+
+.ui-jqgrid .ui-pg-button {
+    border-radius: 6px;
+}
+
+    .ui-jqgrid .ui-pg-button:hover {
+        background: #f1f5f9;
+    }
+
+
+/* =========================================================
+   FULL CALENDAR
+   ========================================================= */
+
+#doctorCalendar {
+    min-height: 390px;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+.fc-toolbar {
+    margin-bottom: 18px !important;
+}
+
+    .fc-toolbar h2 {
+        color: var(--doctor-text);
+        font-size: 19px;
+        font-weight: 650;
+    }
+
+.fc button {
+    height: 32px;
+    padding: 0 11px;
+    color: #475569;
+    background: #fff;
+    border: 1px solid #d8dee8;
+    border-radius: 7px;
+    box-shadow: none;
+    text-shadow: none;
+    font-weight: 600;
+}
+
+    .fc button:hover {
+        background: #f8fafc;
+        border-color: #cbd5e1;
+    }
+
+.fc-state-active,
+.fc-state-down {
+    color: #fff !important;
+    background: var(--doctor-primary) !important;
+    border-color: var(--doctor-primary) !important;
+}
+
+
+/* Calendar grid */
+
+.fc-unthemed td,
+.fc-unthemed th {
+    border-color: #e9edf3;
+}
+
+.fc-head {
+    background: #f8fafc;
+}
+
+.fc-day-header {
+    padding: 9px 4px !important;
+    color: #64748b;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.fc-day-number {
+    padding: 8px !important;
+    color: #475569;
+    font-size: 12px;
+}
+
+.fc-today {
+    background: #eff6ff !important;
+}
+
+
+/* Scheduled dates */
+
+.scheduled-date {
+    margin: 2px;
+    background-color: #16a34a !important;
+    border-color: #16a34a !important;
+    border-radius: 5px;
+}
+
+.fc-event.scheduled-date {
+    padding: 3px 5px;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DAY SELECTION
+   ========================================================= */
+
+.form-check {
+    position: relative;
+    margin-bottom: 8px;
+    padding: 9px 10px 9px 30px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 7px;
+    transition: all .2s ease;
+}
+
+    .form-check:hover {
+        background: var(--doctor-primary-soft);
+        border-color: #bfdbfe;
+    }
+
+.form-check-input {
+    position: absolute;
+    margin-top: 2px;
+    margin-left: -20px;
+}
+
+.form-check-label {
+    margin: 0;
+    color: #475569;
+    font-weight: 500;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   BREAKS
+   ========================================================= */
+
+#breakContainer {
+    margin-bottom: 10px;
+}
+
+.break-row {
+    margin-right: 0;
+    margin-left: 0;
+    padding: 10px 5px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+}
+
+    .break-row .form-control {
+        background: #fff;
+    }
+
+.btnRemoveBreak {
+    width: 100%;
+    color: #b91c1c;
+    background: #fff;
+    border-color: #fecaca;
+}
+
+    .btnRemoveBreak:hover {
+        color: #fff;
+        background: var(--doctor-danger);
+        border-color: var(--doctor-danger);
+    }
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+#scheduleModal .text-danger {
+    margin-top: 4px;
+}
+
+#scheduleError:empty {
+    display: none;
+}
+
+#scheduleError {
+    padding: 9px 11px;
+    color: #b91c1c;
+    background: var(--doctor-danger-soft);
+    border: 1px solid #fecaca;
+    border-radius: 7px;
+}
+
+
+/* =========================================================
+   OPTIONAL SIDEBAR
+   ========================================================= */
+
+.doctor-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 245px;
+    padding: 22px 14px;
+    background: #fff;
+    border-right: 1px solid var(--doctor-border);
+    box-shadow: 2px 0 15px rgba(15, 23, 42, .04);
+    z-index: 1000;
+}
+
+    .doctor-sidebar .sidebar-brand {
+        padding: 5px 14px 25px;
+        color: var(--doctor-primary);
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    .doctor-sidebar a {
+        display: flex;
+        align-items: center;
+        min-height: 42px;
+        margin-bottom: 4px;
+        padding: 0 14px;
+        color: #64748b;
+        border-radius: 8px;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        transition: all .2s ease;
+    }
+
+        .doctor-sidebar a:hover,
+        .doctor-sidebar a.active {
+            color: var(--doctor-primary);
+            background: var(--doctor-primary-soft);
+        }
+
+    .doctor-sidebar + .doctor-main {
+        margin-left: 245px;
+    }
+
+/* =========================================================
+   PRESCRIPTION / MEDICAL RECORD
+   Modern consultation / prescription layout
+   ========================================================= */
+
+.prescription-container {
+    width: 100%;
+    padding: 2px 0 4px;
+    color: var(--doctor-text);
+}
+
+/* APPOINTMENT INFORMATION */
+
+.prescription-info {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1.5fr) minmax(0, 0.75fr) minmax(0, 0.75fr) !important;
+    gap: 20px;
+    width: 100%;
+    margin: 0 !important;
+}
+
+.prescription-info-item {
+    min-width: 0;
+}
+
+    .prescription-info-item label {
+        display: block;
+        margin: 0 0 7px;
+        color: #1e293b;
+        font-size: 13px;
+        font-weight: 650;
+    }
+
+    .prescription-info-item .form-control {
+        width: 100%;
+        height: 40px;
+        padding: 9px 12px;
+        background: #f8fafc;
+        border: 1px solid #cbd5e1;
+        border-radius: 7px;
+        color: #475569;
+        font-size: 13px;
+        box-shadow: none;
+    }
+
+/* DIVIDER */
+
+.prescription-divider {
+    width: 100%;
+    height: 1px;
+    margin: 22px 0;
+    background: #e5eaf0;
+}
+
+/* PRESCRIPTION FIELDS */
+
+.prescription-field {
+    display: grid !important;
+    grid-template-columns: 220px minmax(0, 1fr) !important;
+    column-gap: 26px;
+    width: 100%;
+    margin-bottom: 20px;
+    align-items: start;
+}
+
+.prescription-field-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-top: 10px;
+    color: #172033;
+    font-size: 14px;
+    font-weight: 650;
+}
+
+.field-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 34px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #eaf3ff;
+    color: #1677ff;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.prescription-field-control {
+    width: 100%;
+    min-width: 0;
+}
+
+    /* TEXT AREAS */
+
+    .prescription-field-control textarea.form-control {
+        display: block;
+        width: 100% !important;
+        max-width: none !important;
+        height: auto;
+        margin: 0;
+        padding: 12px 14px;
+        color: #334155;
+        background: #ffffff;
+        border: 1px solid #cbd5e1;
+        border-radius: 8px;
+        box-shadow: none;
+        font-size: 13px;
+        line-height: 1.55;
+        resize: vertical;
+        transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+    }
+
+#diagnosis {
+    min-height: 92px;
+}
+
+#doctorNotes {
+    min-height: 112px;
+}
+
+#medicines {
+    min-height: 130px;
+    background: #fbfdff !important;
+    border-color: #93c5fd !important;
+}
+
+#procedures {
+    min-height: 92px;
+}
+
+#advice {
+    min-height: 92px;
+}
+
+/* HOVER / FOCUS */
+
+.prescription-field-control textarea.form-control:hover {
+    border-color: #94a3b8;
+}
+
+.prescription-field-control textarea.form-control:focus {
+    outline: none;
+    border-color: #1677ff;
+    background: #ffffff !important;
+    box-shadow: 0 0 0 3px rgba(22, 119, 255, 0.10);
+}
+
+/* MEDICINES */
+
+.medicines-field .field-icon {
+    background: #eaf3ff;
+    color: #1677ff;
+}
+
+.medicines-field .prescription-field-label {
+    color: #0f3f7a;
+}
+
+/* HINT */
+
+.prescription-hint {
+    display: block;
+    margin-top: 7px;
+    color: #7c8da5;
+    font-size: 11px;
+}
+
+/* READ ONLY */
+
+.medical-record-value {
+    width: 100%;
+    min-height: 92px;
+    padding: 12px 14px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-line;
+}
+
+.medical-record-large {
+    min-height: 112px;
+}
+
+.medical-record-prescription {
+    min-height: 130px;
+}
+
+/* COMPLETE APPOINTMENT */
+
+.prescription-actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 4px;
+    padding-top: 18px;
+    border-top: 1px solid #e5eaf0;
+}
+
+#btnCompleteAppointment {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 205px;
+    height: 42px;
+    padding: 0 20px;
+    color: #ffffff;
+    background: #16a34a;
+    border: 1px solid #16a34a;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 650;
+    box-shadow: none;
+    transition: all .2s ease;
+}
+
+    #btnCompleteAppointment:hover,
+    #btnCompleteAppointment:focus {
+        color: #ffffff;
+        background: #15803d;
+        border-color: #15803d;
+        box-shadow: 0 5px 14px rgba(22, 163, 74, .20);
+    }
+
+.complete-icon {
+    font-size: 17px;
+    font-weight: 700;
+}

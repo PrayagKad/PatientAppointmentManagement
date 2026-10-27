@@ -2,27 +2,36 @@
 
 @{
     ViewBag.Title = "Patient Registration";
+    string message = TempData["message"] as string;
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-6">
+<div class="auth-wrapper">
 
-        <div class="card mt-5 shadow-sm">
+    <div class="auth-card auth-card-wide">
 
-            <div class="card-body">
+        <div class="auth-header">
+            <span class="auth-icon"><span class="glyphicon glyphicon-user"></span></span>
+            <h3>Create your account</h3>
+            <p>Register as a patient to book appointments</p>
+        </div>
 
-                <h3 class="text-center mb-4">
-                    Patient Registration
-                </h3>
-                <h2 class="text-danger">  @TempData["message"] </h2>
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="alert alert-danger">
+                @message
+            </div>
+        }
 
-                @using (Html.BeginForm("RegisterPatient", "Account", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
+        @using (Html.BeginForm("RegisterPatient", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
 
-                    <div class="form-group mb-3">
+            <div class="row">
 
-                        @Html.LabelFor(m => m.FullName)
+                <div class="col-sm-6">
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.FullName, new { @class = "form-label" })
 
                         @Html.TextBoxFor(m => m.FullName,
                             new
@@ -36,27 +45,12 @@
                             new { @class = "text-danger" })
 
                     </div>
+                </div>
 
-                    <div class="form-group mb-3">
+                <div class="col-sm-6">
+                    <div class="form-group">
 
-                        @Html.LabelFor(m => m.Email)
-
-                        @Html.TextBoxFor(m => m.Email,
-                            new
-                            {
-                                @class = "form-control",
-                                placeholder = "Enter email"
-                            })
-
-                        @Html.ValidationMessageFor(m => m.Email,
-                            "",
-                            new { @class = "text-danger" })
-
-                    </div>
-
-                    <div class="form-group mb-3">
-
-                        @Html.LabelFor(m => m.Phone)
+                        @Html.LabelFor(m => m.Phone, new { @class = "form-label" })
 
                         @Html.TextBoxFor(m => m.Phone,
                             new
@@ -66,10 +60,33 @@
                             })
 
                     </div>
+                </div>
 
-                    <div class="form-group mb-3">
+            </div>
 
-                        @Html.LabelFor(m => m.Password)
+            <div class="form-group">
+
+                @Html.LabelFor(m => m.Email, new { @class = "form-label" })
+
+                @Html.TextBoxFor(m => m.Email,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Enter email"
+                    })
+
+                @Html.ValidationMessageFor(m => m.Email,
+                    "",
+                    new { @class = "text-danger" })
+
+            </div>
+
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <div class="form-group">
+
+                        @Html.LabelFor(m => m.Password, new { @class = "form-label" })
 
                         @Html.PasswordFor(m => m.Password,
                             new
@@ -83,10 +100,12 @@
                             new { @class = "text-danger" })
 
                     </div>
+                </div>
 
-                    <div class="form-group mb-3">
+                <div class="col-sm-6">
+                    <div class="form-group">
 
-                        @Html.LabelFor(m => m.ConfirmPassword)
+                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "form-label" })
 
                         @Html.PasswordFor(m => m.ConfirmPassword,
                             new
@@ -101,28 +120,30 @@
                             new { @class = "text-danger" })
 
                     </div>
-
-                    <button type="submit"
-                            class="btn btn-primary w-100">
-                        Register
-                    </button>
-
-                    <div class="text-center mt-3">
-
-                        @Html.ActionLink(
-                            "Already have an account? Login",
-                            "Login",
-                            "Account"
-                        )
-
-                    </div>
-                }
+                </div>
 
             </div>
 
-        </div>
+            <button type="submit"
+                    class="btn btn-primary btn-block">
+                Register
+            </button>
+
+            <div class="auth-footer">
+
+                <span>Already have an account?</span>
+
+                @Html.ActionLink(
+                    "Login",
+                    "Login",
+                    "Account"
+                )
+
+            </div>
+        }
 
     </div>
+
 </div>
 
 @section Scripts

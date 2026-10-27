@@ -2,115 +2,113 @@
 
 @{
     ViewBag.Title = "Login";
+    string message = TempData["message"] as string;
+    bool isSuccess = message != null && message.ToLower().Contains("success");
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-5">
+<div class="auth-wrapper">
 
-        <div class="card shadow-sm mt-5">
+    <div class="auth-card">
 
-            <div class="card-body p-4">
+        <div class="auth-header">
+            <span class="auth-icon"><span class="glyphicon glyphicon-lock"></span></span>
+            <h3>Welcome back</h3>
+            <p>Sign in to manage your appointments</p>
+        </div>
 
-                <h3 class="text-center mb-4">
-                    Login
-                </h3>
-                <h2 class="text-danger">  @TempData["message"] </h2>
+        @if (!string.IsNullOrWhiteSpace(message))
+        {
+            <div class="alert @(isSuccess ? "alert-success" : "alert-danger")">
+                @message
+            </div>
+        }
 
-                @using (Html.BeginForm("Login", "Account", FormMethod.Post))
-                {
-                    @Html.AntiForgeryToken()
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
 
-                    @Html.ValidationSummary(
-                        true,
-                        "",
-                        new { @class = "text-danger mb-3" }
-                    )
+            @Html.ValidationSummary(
+                true,
+                "",
+                new { @class = "text-danger" }
+            )
 
-                    <div class="form-group mb-3">
+            <div class="form-group">
 
-                        @Html.LabelFor(
-                            model => model.Email,
-                            new { @class = "form-label" }
-                        )
+                @Html.LabelFor(
+                    model => model.Email,
+                    new { @class = "form-label" }
+                )
 
-                        @Html.TextBoxFor(
-                            model => model.Email,
-                            new
-                            {
-                                @class = "form-control",
-                                placeholder = "Enter your email"
-                            }
-                        )
+                @Html.TextBoxFor(
+                    model => model.Email,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Enter your email"
+                    }
+                )
 
-                        @Html.ValidationMessageFor(
-                            model => model.Email,
-                            "",
-                            new { @class = "text-danger" }
-                        )
-
-                    </div>
-
-                    <div class="form-group mb-3">
-
-                        @Html.LabelFor(
-                            model => model.Password,
-                            new { @class = "form-label" }
-                        )
-
-                        @Html.PasswordFor(
-                            model => model.Password,
-                            new
-                            {
-                                @class = "form-control",
-                                placeholder = "Enter your password"
-                            }
-                        )
-
-                        @Html.ValidationMessageFor(
-                            model => model.Password,
-                            "",
-                            new { @class = "text-danger" }
-                        )
-
-                    </div>
-
-                    <div class="form-check mb-3">
-
-                        @Html.CheckBoxFor(
-                            model => model.RememberMe,
-                            new { @class = "form-check-input" }
-                        )
-
-                        @Html.LabelFor(
-                            model => model.RememberMe,
-                            new { @class = "form-check-label" }
-                        )
-
-                    </div>
-
-                    <button type="submit"
-                            class="btn btn-primary w-100">
-                        Login
-                    </button>
-
-                    <div class="text-center mt-3">
-
-                        <span>Don't have an account?</span>
-
-                        @Html.ActionLink(
-                            "Register as Patient",
-                            "RegisterPatient",
-                            "Account"
-                        )
-
-                    </div>
-                }
+                @Html.ValidationMessageFor(
+                    model => model.Email,
+                    "",
+                    new { @class = "text-danger" }
+                )
 
             </div>
 
-        </div>
+            <div class="form-group">
+
+                @Html.LabelFor(
+                    model => model.Password,
+                    new { @class = "form-label" }
+                )
+
+                @Html.PasswordFor(
+                    model => model.Password,
+                    new
+                    {
+                        @class = "form-control",
+                        placeholder = "Enter your password"
+                    }
+                )
+
+                @Html.ValidationMessageFor(
+                    model => model.Password,
+                    "",
+                    new { @class = "text-danger" }
+                )
+
+            </div>
+
+            <div class="checkbox-row">
+
+                @Html.CheckBoxFor(model => model.RememberMe)
+
+                @Html.LabelFor(model => model.RememberMe)
+
+            </div>
+
+            <button type="submit"
+                    class="btn btn-primary btn-block">
+                Login
+            </button>
+
+            <div class="auth-footer">
+
+                <span>Don't have an account?</span>
+
+                @Html.ActionLink(
+                    "Register as Patient",
+                    "RegisterPatient",
+                    "Account"
+                )
+
+            </div>
+        }
 
     </div>
+
 </div>
 
 @section Scripts
