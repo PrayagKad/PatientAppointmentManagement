@@ -339,47 +339,67 @@
 
                     console.log(doctor);
 
+                    var photoUrl = doctor.ProfileImage;
+
+                    if (!photoUrl || photoUrl === "") {
+                        photoUrl = "/Content/images/default-doctor.png";
+                    }
+
                     var card =
                         '<div class="col-md-4" style="margin-bottom:20px;">' +
 
-                            '<div class="panel panel-info">' +
+                        '<div class="panel panel-info patient-doctor-card">' +
 
-                                '<div class="panel-heading">' +
-                                    '<h4>Dr. ' + doctor.FullName + '</h4>' +
-                                '</div>' +
+                        '<div class="doctor-photo-wrapper">' +
 
-                                '<div class="panel-body">' +
+                        '<img src="' + photoUrl + '"' +
+                        ' class="doctor-photo"' +
+                        ' alt="Dr. ' + doctor.FullName + '"' +
+                        ' onerror="this.src=\'/Content/images/default-doctor.png\'" />' +
 
-                                    '<p>' +
-                                            '<strong>Specialization:</strong> ' +
-                                            '<span class="doctor-specialization">' +
-                                            doctor.Specialization +
-                                             '</span>' +
-                                    '</p>' +
+                        '<span class="doctor-available">' +
+                        'Available' +
+                        '</span>' +
 
-                                    '<p>' +
-                                            '<strong>Qualification:</strong> ' +
-                                            '<span class="doctor-qualification">' +
-                                            doctor.Qualification +
-                                            '</span>' +
-                                    '</p>' +
+                        '</div>' +
 
-                                    '<p>' +
-                                            '<strong>Experience:</strong> ' +
-                                            '<span class="doctor-experience">' +
-                                            doctor.Experienceyears +
-                                            '</span> Years' +
-                                    '</p>' +
+                        '<div class="patient-doctor-content">' +
 
-                                    '<button type="button" ' +
-                                            'class="btn btn-primary btnViewDoctor" ' +
-                                            'data-doctorid="' + doctor.DoctorId + '">' +
-                                        'View Doctor' +
-                                    '</button>' +
+                        '<h4 class="doctor-name">' +
+                        'Dr. ' + doctor.FullName +
+                        '</h4>' +
 
-                                '</div>' +
+                        '<span class="doctor-specialization">' +
+                        doctor.Specialization +
+                        '</span>' +
 
-                            '</div>' +
+                        '<div class="doctor-detail">' +
+                        '<strong>Qualification:</strong> ' +
+                        '<span class="doctor-qualification">' +
+                        doctor.Qualification +
+                        '</span>' +
+                        '</div>' +
+
+                        '<div class="doctor-detail">' +
+                        '<strong>Experience:</strong> ' +
+                        '<span class="doctor-experience">' +
+                        doctor.Experienceyears +
+                        '</span> Years' +
+                        '</div>' +
+
+                        '<div class="doctor-card-actions">' +
+
+                        '<button type="button"' +
+                        ' class="btn btn-primary btnViewDoctor"' +
+                        ' data-doctorid="' + doctor.DoctorId + '">' +
+                        'View Doctor' +
+                        '</button>' +
+
+                        '</div>' +
+
+                        '</div>' +
+
+                        '</div>' +
 
                         '</div>';
 
